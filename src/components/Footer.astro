@@ -1,0 +1,51 @@
+---
+import { person } from '../data/site';
+const phrase = "Let's compare notes";
+---
+<footer id="contact" class="footer">
+  <div class="marquee" aria-hidden="true"><div class="inner">
+    {Array.from({ length: 4 }).map(() => (<><span>{phrase}</span><span class="serif">—</span></>))}
+  </div></div>
+  <h2 class="sr-only">Contact</h2>
+  <div class="foot">
+    <a class="mag" href={`mailto:${person.email}`} data-magnetic="0.4" data-cursor="none"><span>Say hello ↗</span></a>
+    <div class="links mono">
+      <a href={person.links.github}>GitHub</a>
+      <a href={person.links.linkedin}>LinkedIn</a>
+      <a href={person.links.medium}>Medium</a>
+      <a href={`mailto:${person.email}`}>Email</a>
+    </div>
+    <div class="clock mono">Boston · <span data-clock>--:--:--</span></div>
+  </div>
+</footer>
+
+<style>
+  .footer { padding: 120px 0 32px; border-top: 1px solid var(--line); overflow: hidden; }
+  .marquee { white-space: nowrap; font-size: clamp(80px, 15vw, 240px); letter-spacing: -.06em; font-weight: 500; line-height: 1.05; }
+  .inner { display: inline-flex; will-change: transform; }
+  .inner span { padding-right: .35em; }
+  .inner .serif { color: var(--accent); }
+  .foot { display: flex; justify-content: space-between; align-items: end; padding: 80px var(--gutter) 0; gap: 32px; flex-wrap: wrap; }
+  .mag { display: inline-grid; place-items: center; width: 180px; height: 180px; border-radius: 50%; background: var(--accent); color: #120804; font-weight: 500; font-size: 17px; }
+  .mag span { display: inline-block; pointer-events: none; }
+  .links { display: flex; gap: 28px; color: var(--muted); flex-wrap: wrap; }
+  .links a:hover { color: var(--text); }
+  .clock { color: var(--dim); }
+  @media (max-width: 860px) { .foot { padding-top: 60px; } .mag { width: 140px; height: 140px; } }
+</style>
+
+<script>
+  import { gsap, lenis, reduce } from '../scripts/core';
+  const inner = document.querySelector<HTMLElement>('.marquee .inner')!;
+  let x = 0, dir = 1, boost = 0;
+  lenis?.on('scroll', ({ velocity }: { velocity: number }) => { boost = velocity; if (velocity) dir = velocity < 0 ? -1 : 1; });
+  if (!reduce) gsap.ticker.add(() => {
+    const half = inner.scrollWidth / 2;
+    x -= (1.2 + Math.abs(boost) * 0.6) * dir; boost *= 0.92;
+    if (x < -half) x += half; if (x > 0) x -= half;
+    gsap.set(inner, { x, skewX: gsap.utils.clamp(-8, 8, -boost * 0.4) });
+  });
+  const clock = document.querySelector('[data-clock]')!;
+  const tick = () => (clock.textContent = new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+  tick(); setInterval(tick, 1000);
+</script>

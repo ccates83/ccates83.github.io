@@ -1,0 +1,39 @@
+---
+import { jobs, education } from '../data/site';
+---
+<div class="rows">
+  <div class="rail" aria-hidden="true"><i></i></div>
+  {jobs.map((j) => (
+    <article class="job">
+      <span class="when mono">{j.when}</span>
+      <h3 data-reveal="lines">{j.title} <span>· {j.org}</span></h3>
+      <p>{j.body}</p>
+    </article>
+  ))}
+  <article class="job">
+    <span class="when mono">Education</span>
+    <h3 data-reveal="lines">{education.degree} <span>· {education.school}</span></h3>
+    <p>{education.body}</p>
+  </article>
+  <slot />
+</div>
+
+<style>
+  .rows { position: relative; padding-left: 40px; }
+  .rail { position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: var(--line); }
+  .rail i { position: absolute; inset: 0; background: var(--accent); transform-origin: top; transform: scaleY(0); }
+  .job { padding-bottom: 64px; position: relative; }
+  .job::before { content: ""; position: absolute; left: -44px; top: 6px; width: 9px; height: 9px; border-radius: 50%; background: var(--bg); border: 1px solid var(--accent); }
+  .when { color: var(--dim); }
+  h3 { font-size: clamp(24px, 2.6vw, 30px); font-weight: 500; letter-spacing: -.025em; margin: 8px 0 10px; }
+  h3 span { color: var(--muted); font-weight: 300; }
+  p { color: var(--muted); font-size: 17px; max-width: 58ch; }
+</style>
+
+<script>
+  import { gsap, reduce } from '../scripts/core';
+  if (!reduce) {
+    gsap.to('.rows .rail i', { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.rows', start: 'top 70%', end: 'bottom 70%', scrub: true } });
+    gsap.utils.toArray<HTMLElement>('.job').forEach((j) => gsap.from(j.querySelectorAll('.when, p'), { opacity: 0, y: 20, duration: 1, stagger: 0.1, ease: 'expo.out', scrollTrigger: { trigger: j, start: 'top 88%' } }));
+  } else gsap.set('.rows .rail i', { scaleY: 1 });
+</script>

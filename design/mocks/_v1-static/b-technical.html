@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connor Cates — Direction B: Technical</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0c0e; --panel: #111316; --line: #23262c; --text: #e8e9eb; --muted: #8a8f98; --dim: #5a5f68; --accent: #c6f36b; --accent-ink: #0b0c0e;
+    --sans: "Inter Tight", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%; }
+  body::before { content: ""; position: fixed; inset: 0; pointer-events: none; background:
+    radial-gradient(600px 300px at 80% -5%, rgba(198,243,107,.10), transparent 70%); }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: var(--mono); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; border-left: 1px solid var(--line); border-right: 1px solid var(--line); min-height: 100vh; position: relative; }
+
+  header.top { display: flex; justify-content: space-between; align-items: center; height: 64px; border-bottom: 1px solid var(--line); margin: 0 -24px; padding: 0 24px; position: sticky; top: 0; background: rgba(11,12,14,.85); backdrop-filter: blur(10px); z-index: 5; }
+  .brand { font-family: var(--mono); font-size: 14px; display: flex; align-items: center; gap: 10px; }
+  .dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; box-shadow: 0 0 12px var(--accent); }
+  header nav { display: flex; gap: 4px; font-family: var(--mono); font-size: 13px; }
+  header nav a { padding: 6px 12px; border-radius: 6px; color: var(--muted); }
+  header nav a:hover { color: var(--text); background: var(--panel); }
+
+  .hero { padding: 96px 0 80px; border-bottom: 1px solid var(--line); margin: 0 -24px; padding-left: 24px; padding-right: 24px; display: grid; grid-template-columns: 1.15fr 1fr; gap: 48px; align-items: center; }
+  .status { display: inline-flex; gap: 8px; align-items: center; font-family: var(--mono); font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 5px 12px 5px 10px; background: var(--panel); }
+  .hero h1 { font-size: clamp(40px, 6vw, 68px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 600; margin: 24px 0 22px; }
+  .hero h1 .hl { color: var(--accent); }
+  .hero p { color: var(--muted); font-size: 18px; max-width: 46ch; }
+  .cta { display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+  .btn { font-family: var(--mono); font-size: 13px; padding: 11px 18px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 500; }
+  .btn:hover { border-color: var(--muted); }
+
+  .term { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; font-family: var(--mono); font-size: 13px; box-shadow: 0 30px 80px -30px rgba(0,0,0,.8); }
+  .term .bar { display: flex; gap: 6px; padding: 12px 14px; border-bottom: 1px solid var(--line); align-items: center; }
+  .term .bar i { width: 10px; height: 10px; border-radius: 50%; background: #2b2f36; }
+  .term .bar span { margin-left: 10px; color: var(--dim); font-size: 12px; }
+  .term pre { padding: 18px 18px 22px; line-height: 1.85; color: var(--muted); white-space: pre-wrap; }
+  .term .p { color: var(--accent); } .term .w { color: var(--text); } .term .c { color: var(--dim); }
+
+  section { padding: 80px 0; border-bottom: 1px solid var(--line); }
+  .sh { display: flex; justify-content: space-between; align-items: end; margin-bottom: 36px; gap: 16px; }
+  .sh .label { font-family: var(--mono); font-size: 12px; color: var(--accent); }
+  .sh h2 { font-size: 34px; letter-spacing: -0.025em; font-weight: 600; margin-top: 6px; }
+  .sh a { font-family: var(--mono); font-size: 13px; color: var(--muted); } .sh a:hover { color: var(--text); }
+
+  .posts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .pc { background: var(--bg); padding: 26px; display: flex; flex-direction: column; gap: 12px; min-height: 230px; transition: background .2s; }
+  .pc:hover { background: var(--panel); }
+  .pc .m { font-family: var(--mono); font-size: 12px; color: var(--dim); display: flex; justify-content: space-between; }
+  .pc .m b { color: var(--accent); font-weight: 400; }
+  .pc h3 { font-size: 21px; line-height: 1.25; letter-spacing: -0.015em; font-weight: 600; }
+  .pc p { color: var(--muted); font-size: 15px; }
+  .pc .go { margin-top: auto; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .pc.soon h3 { color: var(--muted); }
+
+  .eras { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .era { display: grid; grid-template-columns: 90px 220px 1fr; gap: 24px; padding: 18px 24px; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .era:last-child { border-bottom: 0; background: linear-gradient(90deg, rgba(198,243,107,.07), transparent); }
+  .era .n { font-family: var(--mono); font-size: 12px; color: var(--dim); }
+  .era h4 { font-size: 16px; font-weight: 600; }
+  .era p { color: var(--muted); font-size: 15px; }
+  .era:last-child .n { color: var(--accent); }
+
+  .grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .card { border: 1px solid var(--line); border-radius: 12px; padding: 26px; background: var(--panel); position: relative; overflow: hidden; }
+  .card:hover { border-color: #3a3f47; }
+  .card .k { font-family: var(--mono); font-size: 12px; color: var(--dim); }
+  .card h3 { font-size: 22px; letter-spacing: -0.02em; margin: 10px 0 8px; }
+  .card p { color: var(--muted); font-size: 15px; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 18px; }
+  .chips span { font-family: var(--mono); font-size: 11px; color: var(--muted); border: 1px solid var(--line); border-radius: 6px; padding: 3px 8px; }
+  .badge { position: absolute; top: 22px; right: 22px; font-family: var(--mono); font-size: 11px; color: var(--accent-ink); background: var(--accent); padding: 2px 8px; border-radius: 4px; }
+
+  .cv { font-size: 15px; }
+  .row { display: grid; grid-template-columns: 180px 1fr; gap: 24px; padding: 20px 0; border-top: 1px dashed var(--line); }
+  .row .t { font-family: var(--mono); font-size: 12px; color: var(--dim); padding-top: 3px; }
+  .row h4 { font-size: 17px; font-weight: 600; } .row h4 span { color: var(--muted); font-weight: 400; }
+  .row p { color: var(--muted); margin-top: 4px; max-width: 70ch; }
+
+  footer { padding: 72px 0 48px; display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; }
+  footer h2 { font-size: 40px; letter-spacing: -0.03em; font-weight: 600; line-height: 1.1; }
+  footer h2 a { color: var(--accent); }
+  footer .l { font-family: var(--mono); font-size: 13px; color: var(--muted); display: flex; gap: 18px; }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; padding-top: 64px; }
+    .posts, .grid2 { grid-template-columns: 1fr; }
+    .era { grid-template-columns: 60px 1fr; } .era p { grid-column: 2; }
+    .row { grid-template-columns: 1fr; gap: 4px; }
+    header nav a:not(:last-child) { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#"><span class="dot"></span>connor.cates</a>
+    <nav><a href="#writing">/writing</a><a href="#work">/work</a><a href="#cv">/résumé</a><a href="#contact">/contact</a></nav>
+  </header>
+
+  <div class="hero">
+    <div>
+      <span class="status"><span class="dot"></span>Senior Software Engineer @ Vivint · Boston</span>
+      <h1>I build with AI agents, and <span class="hl">measure what they actually do.</span></h1>
+      <p>iOS engineer by trade. For the past five months I've cut my Claude Code setup from a multi-agent framework down to a shell dispatcher that starts a model only when there's real work. I write up every step.</p>
+      <div class="cta"><a class="btn primary" href="#writing">Read the series →</a><a class="btn" href="#cv">View résumé</a></div>
+    </div>
+    <div class="term">
+      <div class="bar"><i></i><i></i><i></i><span>~/setup — zsh</span></div>
+<pre><span class="p">$</span> <span class="w">git log --oneline --reverse eras</span>
+<span class="c">e1</span> persona agents + custom MCP servers
+<span class="c">e2</span> vault as shared memory
+<span class="c">e3</span> watchers, one terminal each
+<span class="c">e4</span> detached claude -p workers
+<span class="c">e5</span> script-first: rules live in tests
+<span class="c">e6</span> <span class="w">one dashboard: claude agents</span>
+<span class="p">$</span> <span class="w">./principles</span>
+→ determinism beats orchestration
+→ measure before and after
+→ safety through revert, not approval</pre>
+    </div>
+  </div>
+
+  <section id="writing">
+    <div class="sh"><div><div class="label">// 01 writing</div><h2>How I run Claude at work</h2></div><a href="https://medium.com/@connorcates">medium.com/@connorcates ↗</a></div>
+    <div class="posts">
+      <a class="pc" href="https://medium.com/@connorcates/from-agent-swarm-to-shell-script-f515498ecb9e"><div class="m"><b>#01 · anchor</b><span>2026-09-26</span></div><h3>From Agent Swarm to Shell Script</h3><p>Five months from a persona-agent framework to a dispatcher that starts a model only to produce work.</p><span class="go">read ↗</span></a>
+      <a class="pc" href="https://medium.com/@connorcates/routing-subagents-to-the-right-model-b2731f4a97c4"><div class="m"><b>#02</b><span>2026-09-28</span></div><h3>Routing Subagents to the Right Model</h3><p>A Haiku classifier, three reversals on how it should fail, and Apple's on-device model as a free router.</p><span class="go">read ↗</span></a>
+      <div class="pc soon"><div class="m"><span>#03 · drafting</span><span>soon</span></div><h3>Measuring Your Claude Code Setup</h3><p>What to count before you change anything, and after.</p><span class="go">in review</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sh"><div><div class="label">// 02 the arc</div><h2>From more model to less model</h2></div></div>
+    <div class="eras">
+      <div class="era"><span class="n">era 1</span><h4>Agent swarm</h4><p>Persona agents coordinating through custom MCP servers.</p></div>
+      <div class="era"><span class="n">era 2–3</span><h4>Vault + watchers</h4><p>A shared Obsidian vault as memory; a terminal per watcher.</p></div>
+      <div class="era"><span class="n">era 4</span><h4>Headless workers</h4><p>Detached <span class="mono">claude -p</span> jobs, visible only to a status script.</p></div>
+      <div class="era"><span class="n">era 5</span><h4>Script-first</h4><p>Anything that is rules over fetched data becomes a tested script.</p></div>
+      <div class="era"><span class="n">era 6 · now</span><h4>Agent view</h4><p>Every remaining model run is a row on one dashboard.</p></div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="sh"><div><div class="label">// 03 work</div><h2>Things I've built</h2></div><a href="https://github.com/ccates83">github.com/ccates83 ↗</a></div>
+    <div class="grid2">
+      <div class="card"><span class="badge">TestFlight</span><div class="k">ios / app</div><h3>Fin</h3><p>Routine tracker for puppies. Hand-rolled CloudKit sync on CKSyncEngine with a zone per dog.</p><div class="chips"><span>Swift</span><span>SwiftUI</span><span>CKSyncEngine</span></div></div>
+      <div class="card"><span class="badge">Live</span><div class="k">automation / pipeline</div><h3>Auto Dogfluencer</h3><p>A fully automated Instagram for two dogs. Python pipeline, Claude headless, three posts a day.</p><div class="chips"><span>Python</span><span>claude -p</span><span>Instagram API</span></div></div>
+      <div class="card"><div class="k">tooling / agents</div><h3>Script-first dispatcher</h3><p>The setup the series documents: deterministic shell around a model that only writes code, reviews, or prose.</p><div class="chips"><span>zsh</span><span>Claude Code</span><span>git revert</span></div></div>
+      <div class="card"><div class="k">ios / practice</div><h3>SwiftUILab</h3><p>Hand-written SwiftUI experiments. Claude reviews; it never writes the first version.</p><div class="chips"><span>SwiftUI</span><span>iOS 26</span></div></div>
+    </div>
+  </section>
+
+  <section id="cv" class="cv">
+    <div class="sh"><div><div class="label">// 04 résumé</div><h2>Experience</h2></div><a href="#">résumé.pdf ↓</a></div>
+    <div class="row"><span class="t">2024.03 → now</span><div><h4>Senior Software Engineer <span>· Vivint</span></h4><p>Lead mobile on a major app re-architecture with progressive rollout. Architected the networking and data-layer restructure. Set company-wide iOS standards; interview across iOS, Android and backend; mentor.</p></div></div>
+    <div class="row"><span class="t">2022.04 → 2024.03</span><div><h4>Software Engineer II <span>· Vivint</span></h4><p>Led the iOS Modernization Team, moving a legacy Objective-C codebase onto current Swift and iOS frameworks.</p></div></div>
+    <div class="row"><span class="t">2021.07 → 2022.04</span><div><h4>Software Engineer I <span>· Vivint</span></h4><p>Shipped iOS features in Swift and Objective-C.</p></div></div>
+    <div class="row"><span class="t">education</span><div><h4>B.A. Computer Science <span>· Hamilton College</span></h4><p>Departmental Honors, minor in Mathematics. NCAA student-athlete, NESCAC All-Academic.</p></div></div>
+  </section>
+
+  <footer id="contact">
+    <h2>Working on agents too?<br><a href="mailto:cates.connor@gmail.com">Let's compare notes →</a></h2>
+    <div class="l"><a href="https://github.com/ccates83">github</a><a href="https://linkedin.com/in/connorcates">linkedin</a><a href="https://medium.com/@connorcates">medium</a></div>
+  </footer>
+</div>
+</body>
+</html>

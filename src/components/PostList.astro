@@ -1,0 +1,68 @@
+---
+import type { CollectionEntry } from 'astro:content';
+interface Props { posts: CollectionEntry<'posts'>[] }
+const { posts } = Astro.props;
+const fmt = (d?: Date) => d?.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+---
+<ol class="posts">
+  {posts.map(({ data: p }) => {
+    const live = p.status === 'published';
+    const Tag = live ? 'a' : 'div';
+    return (
+      <li>
+        <Tag class:list={['post', { live }]} href={live ? p.url : undefined} data-preview={p.summary} data-tag={p.tag ?? (live ? 'Essay' : 'Up next')} data-cursor="none">
+          <span class="d mono">{String(p.number).padStart(2, '0')}</span>
+          <h3>{p.title}</h3>
+          <span class="st mono">{live ? fmt(p.date) : 'Up next'}</span>
+          <span class="arr" aria-hidden="true">{live ? '↗' : '·'}</span>
+          {live && <span class="sr-only">(opens on Medium)</span>}
+        </Tag>
+      </li>
+    );
+  })}
+</ol>
+<div class="preview" aria-hidden="true"><div class="card"><span class="mono tag"></span><p></p></div></div>
+
+<style>
+  .posts { list-style: none; border-top: 1px solid var(--line); }
+  .post { display: grid; grid-template-columns: 80px 1fr 180px 40px; gap: 24px; align-items: center; padding: 34px 0; border-bottom: 1px solid var(--line); position: relative; isolation: isolate; }
+  .post::before { content: ""; position: absolute; inset: 0 calc(-1 * var(--gutter)); background: var(--bg2); transform: scaleY(0); transform-origin: bottom; transition: transform .6s var(--ease); z-index: -1; }
+  .post:hover::before { transform: scaleY(1); }
+  h3 { font-size: clamp(24px, 3.4vw, 46px); font-weight: 400; letter-spacing: -.035em; line-height: 1.05; transition: transform .6s var(--ease); }
+  .post:hover h3 { transform: translateX(16px); }
+  .post:not(.live) h3 { color: var(--muted); }
+  .d { color: var(--dim); }
+  .st { color: var(--muted); }
+  .live .st { color: var(--accent); }
+  .arr { font-size: 22px; transition: transform .6s var(--ease); color: var(--muted); }
+  .live:hover .arr { transform: translate(4px, -4px); color: var(--text); }
+  .preview { position: fixed; left: 0; top: 0; width: 340px; pointer-events: none; z-index: 40; opacity: 0; transform: scale(.6); }
+  .card { background: var(--accent); color: #120804; border-radius: 4px; padding: 22px; height: 220px; display: flex; flex-direction: column; justify-content: space-between; }
+  .card p { font-size: 17px; line-height: 1.35; letter-spacing: -.01em; }
+  .card .mono { opacity: .7; }
+  @media (max-width: 860px) {
+    .post { grid-template-columns: 1fr 24px; gap: 8px 16px; padding: 26px 0; }
+    .d { display: none; } .st { grid-row: 2; }
+    .preview { display: none; }
+  }
+</style>
+
+<script>
+  import { gsap, finePointer, reduce } from '../scripts/core';
+  const pv = document.querySelector<HTMLElement>('.preview');
+  if (pv && finePointer && !reduce) {
+    const tag = pv.querySelector('.tag')!, text = pv.querySelector('p')!;
+    const pos = { x: 0, y: 0 }, pp = { x: 0, y: 0 };
+    addEventListener('pointermove', (e) => { pos.x = e.clientX + 24; pos.y = e.clientY - 110; });
+    gsap.ticker.add(() => {
+      const vx = pos.x - pp.x; pp.x += vx * 0.12; pp.y += (pos.y - pp.y) * 0.12;
+      gsap.set(pv, { x: pp.x, y: pp.y, rotate: gsap.utils.clamp(-12, 12, vx * 0.15) });
+    });
+    document.querySelectorAll<HTMLElement>('.post').forEach((el) => {
+      el.addEventListener('pointerenter', () => { text.textContent = el.dataset.preview!; tag.textContent = el.dataset.tag!; gsap.to(pv, { opacity: 1, scale: 1, duration: 0.5, ease: 'expo.out' }); });
+      el.addEventListener('pointerleave', () => gsap.to(pv, { opacity: 0, scale: 0.6, duration: 0.4, ease: 'expo.out' }));
+    });
+  }
+  document.querySelectorAll<HTMLElement>('.post').forEach((el) =>
+    gsap.from(el.children, { y: 30, opacity: 0, duration: 1, stagger: 0.05, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 92%' } }));
+</script>

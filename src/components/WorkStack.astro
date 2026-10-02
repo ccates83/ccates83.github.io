@@ -1,0 +1,57 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectVisual from './ProjectVisual.astro';
+interface Props { projects: CollectionEntry<'projects'>[] }
+const { projects } = Astro.props;
+---
+<div class="stack">
+  {projects.map(({ id, data: p }) => (
+    <a class:list={['wcard', p.theme]} href={`/work/${id}`} data-cursor="big" data-cursor-label="Open">
+      <div class="left">
+        <div>
+          <span class="mono k">{p.kind} · {p.status}</span>
+          <h3>{p.title}</h3>
+          <p class="desc">{p.summary}</p>
+        </div>
+        <div class="chips">{p.stack.slice(0, 4).map((s) => <span>{s}</span>)}</div>
+      </div>
+      <ProjectVisual kind={p.visual} />
+    </a>
+  ))}
+</div>
+
+<style>
+  .wcard { position: sticky; top: 12vh; height: 76vh; border-radius: 20px; padding: 44px; margin-bottom: 6vh; display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; overflow: hidden; transform-origin: center top; border: 1px solid var(--line); }
+  .wcard:last-child { margin-bottom: 0; }
+  .left { display: flex; flex-direction: column; justify-content: space-between; }
+  h3 { font-size: clamp(48px, 7.5vw, 116px); letter-spacing: -.055em; font-weight: 500; line-height: .9; margin-top: 12px; text-wrap: balance; }
+  .desc { font-size: 19px; max-width: 34ch; margin-top: 24px; opacity: .85; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 28px; }
+  .chips span { font-family: var(--mono); font-size: 11px; text-transform: uppercase; border: 1px solid currentColor; border-radius: 99px; padding: 5px 12px; opacity: .7; }
+  .night { background: #121316; } .night .k { color: #7fa6d9; }
+  .ember { background: #1a0d08; color: #ffe3d6; }
+  .paper { background: #e9e7e1; color: #111; }
+  .moss { background: #101a12; color: #dff3df; }
+  @media (max-width: 860px) {
+    .wcard { grid-template-columns: 1fr; padding: 26px; gap: 24px; height: auto; min-height: 76vh; top: 10vh; }
+    .desc { font-size: 17px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .wcard { position: relative; top: 0; } }
+</style>
+
+<script>
+  import { gsap, reduce, finePointer } from '../scripts/core';
+  const cards = gsap.utils.toArray<HTMLElement>('.wcard');
+  if (!reduce) {
+    cards.forEach((c, i) => {
+      if (i < cards.length - 1) gsap.to(c, { scale: 0.9, opacity: 0.35, filter: 'blur(2px)', ease: 'none',
+        scrollTrigger: { trigger: cards[i + 1], start: 'top bottom', end: 'top 12%', scrub: true } });
+      const vis = c.querySelector<HTMLElement>('.vis')!;
+      gsap.fromTo(vis, { clipPath: 'inset(30% 30% 30% 30% round 12px)' }, { clipPath: 'inset(0% 0% 0% 0% round 12px)', ease: 'expo.out', duration: 1.6, scrollTrigger: { trigger: c, start: 'top 70%' } });
+      if (finePointer) c.addEventListener('pointermove', (e) => {
+        const b = c.getBoundingClientRect();
+        gsap.to(vis, { x: (e.clientX - b.left - b.width / 2) * 0.03, y: (e.clientY - b.top - b.height / 2) * 0.03, duration: 0.8, ease: 'expo.out' });
+      });
+    });
+  }
+</script>

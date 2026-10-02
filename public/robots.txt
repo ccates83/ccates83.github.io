@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://connorcates.com/sitemap-index.xml

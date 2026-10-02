@@ -1,0 +1,60 @@
+---
+interface Props { kind: 'phone' | 'grid' | 'terminal' | 'spring' }
+const { kind } = Astro.props;
+---
+<div class:list={['vis', `v-${kind}`]} aria-hidden="true">
+  {kind === 'phone' && (
+    <div class="phone">
+      <div class="notch"></div>
+      <i class="hd"></i>
+      {['Walk', 'Breakfast', 'Nap', 'Potty', 'Play'].map((e, n) => (<i class="ev"><b style={`--d:${n}`}></b>{e}<em>{['7:10', '7:45', '9:30', '11:05', '12:20'][n]}</em></i>))}
+    </div>
+  )}
+  {kind === 'grid' && (<div class="grid-sq">{Array.from({ length: 9 }).map(() => <i />)}</div>)}
+  {kind === 'terminal' && (
+    <div class="term">
+      <span>$ <em>./dispatch</em></span>
+      <span><b>›</b> fetch   facts.json        ok</span>
+      <span><b>›</b> decide  rules (tested)    ok</span>
+      <span><b>›</b> apply   1 commit          a41f9c2</span>
+      <span><b>›</b> model   only if work      skipped</span>
+      <span><b>›</b> report  agent view        ok</span>
+    </div>
+  )}
+  {kind === 'spring' && (<><div class="blob"></div><div class="hint mono">Move your cursor · .spring(response: 0.5)</div></>)}
+</div>
+
+<style>
+  .vis { position: relative; overflow: hidden; border-radius: 12px; min-height: 100%; }
+  .phone { position: absolute; left: 50%; top: 12%; width: min(46%, 240px); aspect-ratio: 9 / 19; transform: translateX(-50%); border-radius: 34px; background: #0a0a0a; border: 6px solid #222; box-shadow: 0 40px 80px rgba(0, 0, 0, .5); padding: 34px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .phone { container-type: inline-size; }
+  .notch { position: absolute; top: 8px; left: 50%; width: 30%; height: 14px; border-radius: 10px; background: #000; transform: translateX(-50%); }
+  .phone i { display: flex; align-items: center; gap: 8px; height: 34px; border-radius: 10px; background: #18202c; font-style: normal; font-size: 11px; color: #c9d6ea; padding: 0 10px; }
+  .phone i em { margin-left: auto; font-style: normal; color: #6f819c; font-family: var(--mono); font-size: 10px; }
+  .phone i b { width: 8px; height: 8px; border-radius: 50%; background: #7fa6d9; }
+  .phone .hd { height: 64px; background: linear-gradient(135deg, #4b7bb8, #2b3f5c); }
+  .v-phone { background: radial-gradient(circle at 30% 30%, #2b3f5c, #0e1520); }
+  .v-grid { background: radial-gradient(circle at 70% 40%, #ff5b2e, #4a1606); }
+  .grid-sq { position: absolute; inset: 28px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .grid-sq i { border-radius: 8px; background: rgba(255, 255, 255, .12); }
+  .grid-sq i:nth-child(3n + 1) { background: rgba(255, 200, 170, .45); }
+  .grid-sq i:nth-child(4) { background: rgba(255, 255, 255, .7); }
+  .v-terminal { background: #111; }
+  .term { position: absolute; inset: 24px; font-family: var(--mono); font-size: 13px; color: #9a9a9a; line-height: 1.9; display: flex; flex-direction: column; justify-content: center; }
+  .term span { white-space: pre; }
+  .term b { color: var(--accent); font-weight: 400; } .term em { color: #eee; font-style: normal; }
+  .v-spring { background: radial-gradient(circle at 50% 60%, #3c7a46, #0b150d); }
+  .blob { position: absolute; width: 84px; height: 84px; border-radius: 24px; background: #9fe0a8; left: 50%; top: 50%; margin: -42px 0 0 -42px; box-shadow: 0 20px 60px rgba(120, 220, 140, .35); }
+  .hint { position: absolute; left: 20px; bottom: 18px; opacity: .6; }
+  @media (max-width: 860px) { .vis { min-height: 300px; } .term { font-size: 11px; } .phone { width: 150px; top: 24px; } }
+</style>
+
+<script>
+  import { gsap } from '../scripts/core';
+  // SwiftUILab's live spring toy.
+  document.querySelectorAll<HTMLElement>('.v-spring').forEach((v) => {
+    const b = v.querySelector<HTMLElement>('.blob')!;
+    v.addEventListener('pointermove', (e) => { const r = v.getBoundingClientRect(), x = e.clientX - r.left - r.width / 2, y = e.clientY - r.top - r.height / 2; gsap.to(b, { x, y, rotate: x * 0.15, duration: 1.1, ease: 'elastic.out(1, .45)' }); });
+    v.addEventListener('pointerleave', () => gsap.to(b, { x: 0, y: 0, rotate: 0, duration: 1.4, ease: 'elastic.out(1, .35)' }));
+  });
+</script>

@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Not found">
+  <section class="nf">
+    <p class="mono label">404</p>
+    <h1>This page wandered off<span class="serif accent">.</span></h1>
+    <a class="home mono" href="/">← Back home</a>
+  </section>
+</Base>
+<style>
+  .nf { min-height: 80vh; padding: 200px var(--gutter) 80px; }
+  h1 { font-size: clamp(48px, 9vw, 140px); letter-spacing: -.05em; line-height: .95; font-weight: 500; max-width: 12ch; }
+  .home { display: inline-block; margin-top: 48px; border: 1px solid var(--line); border-radius: 99px; padding: 12px 20px; }
+  .home:hover { border-color: var(--accent); }
+</style>

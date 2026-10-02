@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connor Cates — Paper</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
+<style>
+  :root {
+    --bg: #f3f0e8; --surface: #fbf9f4; --ink: #17150f; --muted: #6f6a5e; --line: #dfd9cb; --accent: #2f4bff; --accent-soft: #e2e6ff; --hl: rgba(23,21,15,.045);
+    --serif: "Fraunces", Georgia, serif; --sans: "Inter Tight", system-ui, sans-serif; --mono: "JetBrains Mono", ui-monospace, monospace;
+    --ease: cubic-bezier(.22,1,.36,1); --spring: cubic-bezier(.34,1.56,.64,1);
+  }
+  [data-theme="dark"] { --bg: #111110; --surface: #191917; --ink: #f0ece2; --muted: #9a9486; --line: #2b2a26; --accent: #8fa0ff; --accent-soft: #1f2340; --hl: rgba(240,236,226,.05); }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+  .mono { font-family: var(--mono); font-size: 12px; letter-spacing: .01em; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+
+  /* nav */
+  header.top { position: sticky; top: 0; z-index: 30; backdrop-filter: blur(14px) saturate(1.4); background: color-mix(in oklab, var(--bg) 78%, transparent); border-bottom: 1px solid transparent; transition: border-color .4s; }
+  header.top.scrolled { border-color: var(--line); }
+  header .row { display: flex; align-items: center; justify-content: space-between; height: 68px; }
+  .brand { font-family: var(--serif); font-size: 21px; font-weight: 500; letter-spacing: -.01em; font-variation-settings: "SOFT" 100; }
+  .navlinks { position: relative; display: flex; gap: 2px; padding: 4px; border-radius: 99px; background: var(--hl); }
+  .navlinks a { position: relative; z-index: 1; padding: 7px 16px; font-size: 14px; color: var(--muted); transition: color .3s; }
+  .navlinks a.on, .navlinks a:hover { color: var(--ink); }
+  .navlinks .pill { position: absolute; top: 4px; bottom: 4px; left: 0; border-radius: 99px; background: var(--surface); box-shadow: 0 1px 2px rgba(0,0,0,.06), 0 4px 14px rgba(0,0,0,.06); transition: transform .55s var(--spring), width .55s var(--spring); }
+  .tools { display: flex; gap: 10px; align-items: center; }
+  .ring { width: 30px; height: 30px; }
+  .ring circle { fill: none; stroke-width: 2; }
+  .ring .bg { stroke: var(--line); } .ring .fg { stroke: var(--accent); stroke-linecap: round; transform: rotate(-90deg); transform-origin: center; }
+  .theme { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: var(--hl); transition: transform .5s var(--spring); }
+  .theme:hover { transform: rotate(25deg) scale(1.08); }
+  .theme:active { transform: scale(.9); }
+
+  /* hero */
+  .hero { padding: 120px 0 90px; }
+  .hero .status { display: inline-flex; align-items: center; gap: 10px; padding: 6px 14px 6px 8px; border-radius: 99px; background: var(--surface); border: 1px solid var(--line); font-size: 14px; color: var(--muted); }
+  .hero .status i { width: 8px; height: 8px; border-radius: 50%; background: #2bb673; box-shadow: 0 0 0 0 rgba(43,182,115,.5); animation: ping 2s infinite; }
+  @keyframes ping { 70% { box-shadow: 0 0 0 8px rgba(43,182,115,0) } 100% { box-shadow: 0 0 0 0 rgba(43,182,115,0) } }
+  .hero h1 { font-family: var(--serif); font-weight: 350; font-size: clamp(50px, 8.6vw, 128px); line-height: .98; letter-spacing: -.035em; margin: 34px 0 34px; font-variation-settings: "SOFT" 50, "opsz" 144; }
+  .hero h1 em { font-style: italic; color: var(--accent); font-weight: 300; }
+  .roller { display: inline-block; height: 1.02em; overflow: hidden; vertical-align: bottom; position: relative; }
+  .roller span { display: block; width: max-content; font-style: italic; color: var(--accent); padding-right: .08em; }
+  .h1 .ln { display: block; overflow: hidden; padding-bottom: .06em; margin-bottom: -.06em; }
+  .h1 .li { display: block; }
+  .hero .lede { display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: end; }
+  .hero .lede p { font-size: 21px; color: var(--muted); max-width: 40ch; line-height: 1.5; }
+  .hero .lede p b { color: var(--ink); font-weight: 500; }
+  .stats { display: flex; gap: 40px; justify-content: flex-end; }
+  .stat .n { font-family: var(--serif); font-size: 52px; line-height: 1; letter-spacing: -.03em; font-weight: 350; }
+  .stat .l { font-size: 13px; color: var(--muted); }
+
+  section { padding: 100px 0; border-top: 1px solid var(--line); }
+  .sh { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 44px; flex-wrap: wrap; }
+  .sh h2 { font-family: var(--serif); font-weight: 350; font-size: clamp(40px, 5.5vw, 72px); letter-spacing: -.03em; line-height: 1; }
+  .sh h2 .num { font-family: var(--mono); font-size: 13px; color: var(--accent); vertical-align: top; margin-right: 12px; letter-spacing: 0; }
+
+  /* writing: filters + flip list + hover follower */
+  .filters { position: relative; display: inline-flex; gap: 2px; padding: 4px; border-radius: 12px; background: var(--hl); }
+  .filters button { position: relative; z-index: 1; padding: 8px 16px; font-size: 14px; color: var(--muted); border-radius: 9px; transition: color .3s; }
+  .filters button.on { color: var(--ink); }
+  .filters .pill { position: absolute; top: 4px; bottom: 4px; left: 0; border-radius: 9px; background: var(--surface); box-shadow: 0 1px 2px rgba(0,0,0,.08); transition: transform .5s var(--spring), width .5s var(--spring); }
+  .list { position: relative; }
+  .follower { position: absolute; left: -16px; right: -16px; top: 0; height: 0; border-radius: 14px; background: var(--hl); opacity: 0; pointer-events: none; transition: transform .45s var(--ease), height .45s var(--ease), opacity .3s; }
+  .item { position: relative; display: grid; grid-template-columns: 110px 1fr auto; gap: 24px; align-items: baseline; padding: 26px 0; border-bottom: 1px solid var(--line); }
+  .item .date { color: var(--muted); }
+  .item h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(22px, 2.8vw, 32px); letter-spacing: -.02em; line-height: 1.15; }
+  .item p { color: var(--muted); font-size: 16px; margin-top: 6px; max-width: 60ch; max-height: 0; opacity: 0; overflow: hidden; transition: max-height .5s var(--ease), opacity .4s, margin .5s var(--ease); margin-top: 0; }
+  .item:hover p { max-height: 80px; opacity: 1; margin-top: 8px; }
+  .badge { font-family: var(--mono); font-size: 11px; padding: 4px 10px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
+  .badge.live { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .item .go { display: inline-block; transition: transform .45s var(--spring); }
+  .item:hover .go { transform: translate(4px, -4px); }
+
+  /* projects: spotlight + tilt + flip expand */
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .card { position: relative; border-radius: 22px; background: var(--surface); border: 1px solid var(--line); padding: 28px; min-height: 340px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; overflow: hidden; transform-style: preserve-3d; will-change: transform; }
+  .card::before { content: ""; position: absolute; inset: 0; background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), color-mix(in oklab, var(--accent) 14%, transparent), transparent 60%); opacity: 0; transition: opacity .4s; }
+  .card:hover::before { opacity: 1; }
+  .card .k { font-family: var(--mono); font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; }
+  .card h3 { font-family: var(--serif); font-weight: 400; font-size: 44px; letter-spacing: -.03em; line-height: 1; margin-bottom: 10px; }
+  .card p { color: var(--muted); max-width: 36ch; }
+  .card .art { position: absolute; right: -40px; top: 40px; width: 220px; height: 220px; border-radius: 50%; filter: blur(0); opacity: .9; transition: transform .8s var(--ease); }
+  .card:hover .art { transform: scale(1.1) rotate(8deg); }
+  .art.a1 { background: conic-gradient(from 120deg, #9db7ff, #2f4bff, #c9d6ff, #9db7ff); border-radius: 46% 54% 60% 40%; }
+  .art.a2 { background: conic-gradient(from 0deg, #ffb48f, #ff6a3d, #ffd7c2, #ffb48f); border-radius: 60% 40% 45% 55%; }
+  .art.a3 { background: repeating-linear-gradient(0deg, var(--ink) 0 2px, transparent 2px 14px); border-radius: 16px; opacity: .12; }
+  .art.a4 { background: conic-gradient(from 200deg, #a9e3b4, #2bb673, #e2f6e6, #a9e3b4); border-radius: 30%; }
+  .more { font-size: 14px; font-weight: 500; display: inline-flex; gap: 8px; align-items: center; }
+  .more i { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: var(--bg); font-style: normal; font-size: 13px; transition: transform .5s var(--spring); }
+  .card:hover .more i { transform: rotate(-45deg) scale(1.1); }
+  .scrim { position: fixed; inset: 0; background: rgba(10,10,8,.4); backdrop-filter: blur(6px); z-index: 40; opacity: 0; pointer-events: none; }
+  .card.open { position: fixed; z-index: 50; cursor: default; }
+  .card .detail { display: none; margin-top: 24px; color: var(--muted); }
+  .card.open .detail { display: block; }
+  .card.open .more { display: none; } .card.open .k { padding-right: 48px; }
+  .card .detail ul { list-style: none; display: grid; gap: 10px; margin-top: 16px; }
+  .card .detail li { padding-left: 20px; position: relative; } .card .detail li::before { content: "→"; position: absolute; left: 0; color: var(--accent); }
+  .close { position: absolute; top: 20px; right: 20px; width: 36px; height: 36px; border-radius: 50%; background: var(--hl); display: none; z-index: 2; }
+  .card.open .close { display: grid; place-items: center; }
+
+  /* résumé accordion */
+  .acc { border-top: 1px solid var(--line); }
+  .job { border-bottom: 1px solid var(--line); }
+  .job button { width: 100%; text-align: left; display: grid; grid-template-columns: 1fr auto 30px; gap: 24px; align-items: center; padding: 26px 0; }
+  .job h3 { font-family: var(--serif); font-weight: 400; font-size: 28px; letter-spacing: -.02em; }
+  .job h3 span { color: var(--muted); font-style: italic; font-weight: 300; }
+  .job .when { color: var(--muted); }
+  .job .plus { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); position: relative; transition: transform .5s var(--spring), background .3s; }
+  .job .plus::before, .job .plus::after { content: ""; position: absolute; left: 50%; top: 50%; width: 11px; height: 1.5px; background: var(--ink); transform: translate(-50%,-50%); }
+  .job .plus::after { transform: translate(-50%,-50%) rotate(90deg); }
+  .job.open .plus { transform: rotate(135deg); background: var(--accent-soft); }
+  .job .body { height: 0; overflow: hidden; }
+  .job .body > div { padding: 0 0 30px; color: var(--muted); max-width: 64ch; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+  .chips span { font-family: var(--mono); font-size: 11px; padding: 4px 10px; border-radius: 6px; background: var(--hl); color: var(--ink); }
+
+  /* footer */
+  footer { padding: 120px 0 40px; border-top: 1px solid var(--line); }
+  .big { font-family: var(--serif); font-weight: 350; font-size: clamp(56px, 11vw, 168px); letter-spacing: -.045em; line-height: .95; cursor: default; }
+  .big .ch { display: inline-block; transition: transform .6s var(--spring), color .3s; }
+  .big a { color: var(--accent); font-style: italic; }
+  .fl { display: flex; justify-content: space-between; margin-top: 60px; color: var(--muted); font-size: 14px; flex-wrap: wrap; gap: 16px; }
+  .fl nav { display: flex; gap: 22px; } .fl a { position: relative; } .fl a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .5s var(--ease); } .fl a:hover::after { transform: scaleX(1); transform-origin: left; } .fl a:hover { color: var(--ink); }
+  .copy-mail { display: inline-flex; align-items: center; gap: 10px; margin-top: 36px; padding: 14px 22px; border-radius: 99px; background: var(--ink); color: var(--bg); font-size: 15px; font-weight: 500; transition: transform .5s var(--spring); }
+  .copy-mail:hover { transform: scale(1.04); } .copy-mail:active { transform: scale(.97); }
+  .toast { position: fixed; left: 50%; bottom: 28px; transform: translate(-50%, 220%); opacity: 0; background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 99px; font-size: 14px; z-index: 60; }
+
+  @media (max-width: 820px) {
+    .navlinks { display: none; }
+    .hero .lede { grid-template-columns: 1fr; } .stats { justify-content: flex-start; }
+    .item { grid-template-columns: 1fr auto; } .item .date { grid-column: 1 / -1; }
+    .grid { grid-template-columns: 1fr; }
+    .job button { grid-template-columns: 1fr 30px; } .job .when { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap row">
+  <a class="brand" href="#">Connor Cates</a>
+  <nav class="navlinks"><span class="pill"></span><a href="#writing" class="on">Writing</a><a href="#work">Projects</a><a href="#cv">Résumé</a><a href="#contact">Contact</a></nav>
+  <div class="tools">
+    <svg class="ring" viewBox="0 0 30 30"><circle class="bg" cx="15" cy="15" r="12"/><circle class="fg" cx="15" cy="15" r="12" stroke-dasharray="75.4" stroke-dashoffset="75.4"/></svg>
+    <button class="theme" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  </div>
+</div></header>
+
+<main class="wrap">
+  <div class="hero">
+    <span class="status"><i></i>Senior Software Engineer at Vivint · Boston</span>
+    <h1 class="h1"><span class="ln"><span class="li">An engineer who</span></span><span class="ln"><span class="li">builds with agents</span></span><span class="ln"><span class="li">and <span class="roller"><span>measures</span><span>reverts</span><span>writes&nbsp;up</span><span>ships</span><span>measures</span></span> it.</span></span></h1>
+    <div class="lede">
+      <p>iOS by trade. For five months I've cut my Claude Code setup down from a multi-agent framework to <b>a shell dispatcher that starts a model only when there's real work.</b> This is where I write it up.</p>
+      <div class="stats">
+        <div class="stat"><div class="n" data-to="5">0</div><div class="l">years building iOS</div></div>
+        <div class="stat"><div class="n" data-to="6">0</div><div class="l">eras of my agent setup</div></div>
+      </div>
+    </div>
+  </div>
+
+  <section id="writing">
+    <div class="sh"><h2 class="rv"><span class="num">01</span>Writing</h2>
+      <div class="filters"><span class="pill"></span><button class="on" data-f="all">All</button><button data-f="live">Published</button><button data-f="next">Up next</button></div></div>
+    <div class="list">
+      <div class="follower"></div>
+      <a class="item" data-k="live" href="https://medium.com/@connorcates/from-agent-swarm-to-shell-script-f515498ecb9e"><span class="date mono">Sep 26, 2026</span><div><h3>From Agent Swarm to Shell Script</h3><p>Five months from a persona-agent framework to a dispatcher that starts a model only when there's real work to produce.</p></div><span class="badge live">Medium <span class="go">↗</span></span></a>
+      <a class="item" data-k="live" href="https://medium.com/@connorcates/routing-subagents-to-the-right-model-b2731f4a97c4"><span class="date mono">Sep 28, 2026</span><div><h3>Routing Subagents to the Right Model</h3><p>A Haiku classifier, three reversals on which way it should fail, and Apple's on-device model as the free router.</p></div><span class="badge live">Medium <span class="go">↗</span></span></a>
+      <div class="item" data-k="next"><span class="date mono">Up next</span><div><h3>Measuring Your Claude Code Setup</h3><p>What to count before you change anything, and after.</p></div><span class="badge">In review</span></div>
+      <div class="item" data-k="next"><span class="date mono">Up next</span><div><h3>Revert, Not Approve</h3><p>Autonomy is acceptable because every change is one commit with a revert SHA.</p></div><span class="badge">In review</span></div>
+      <div class="item" data-k="next"><span class="date mono">Up next</span><div><h3>The Filesystem Is the Agent Framework</h3><p>The plain filesystem ended up as the most useful agent framework in the setup.</p></div><span class="badge">In review</span></div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="sh"><h2 class="rv"><span class="num">02</span>Projects</h2><a class="mono" href="https://github.com/ccates83" style="color:var(--muted)">github.com/ccates83 ↗</a></div>
+    <div class="grid">
+      <article class="card"><button class="close" aria-label="Close">✕</button><div class="art a1"></div><div class="k"><span>iOS app</span><span>TestFlight</span></div><div><h3>Fin</h3><p>A routine tracker for puppies, with hand-rolled CloudKit sync.</p><div class="detail"><p style="max-width:none">The reference app for everything I know about shipping SwiftUI.</p><ul><li>CKSyncEngine sync with a zone per dog</li><li>SwiftUI throughout</li><li>Shipped to TestFlight, v1.0.1</li></ul></div><span class="more" style="margin-top:20px">Details <i>→</i></span></div></article>
+      <article class="card"><button class="close" aria-label="Close">✕</button><div class="art a2"></div><div class="k"><span>Automation</span><span>Live</span></div><div><h3>Auto Dogfluencer</h3><p>Finley and Frankie's Instagram runs itself, three posts a day.</p><div class="detail"><p style="max-width:none">A Python pipeline that shells out to headless Claude for captions and scheduling.</p><ul><li>Python pipeline + <code>claude -p</code></li><li>Three posts a day, no hands</li></ul></div><span class="more" style="margin-top:20px">Details <i>→</i></span></div></article>
+      <article class="card"><button class="close" aria-label="Close">✕</button><div class="art a3"></div><div class="k"><span>Tooling</span><span>The series</span></div><div><h3>Script-first dispatcher</h3><p>Deterministic shell around a model that only writes code, reviews, or prose.</p><div class="detail"><p style="max-width:none">The setup the blog series documents.</p><ul><li>Rules over fetched data live in tested scripts</li><li>Every autonomous change is one commit with a revert SHA</li><li>Every model run is a row in agent view</li></ul></div><span class="more" style="margin-top:20px">Details <i>→</i></span></div></article>
+      <article class="card"><button class="close" aria-label="Close">✕</button><div class="art a4"></div><div class="k"><span>Practice</span><span>Ongoing</span></div><div><h3>SwiftUILab</h3><p>Hand-written SwiftUI experiments. Claude reviews; it never goes first.</p><div class="detail"><p style="max-width:none">A catalog app of experiments from the WWDC26 era, written by hand to keep the craft sharp.</p></div><span class="more" style="margin-top:20px">Details <i>→</i></span></div></article>
+    </div>
+  </section>
+
+  <section id="cv">
+    <div class="sh"><h2 class="rv"><span class="num">03</span>Résumé</h2><a class="mono" href="#" style="color:var(--muted)">Download PDF ↓</a></div>
+    <div class="acc">
+      <div class="job open"><button><h3>Senior Software Engineer <span>at Vivint</span></h3><span class="when mono">2024 — Now</span><span class="plus"></span></button><div class="body"><div>Lead mobile on a major app re-architecture with user-driven information architecture and progressive rollout. Architected the networking and data-layer restructure. Set company-wide iOS standards for package versioning and data-layer practice; interview across iOS, Android and backend; mentor junior engineers.<div class="chips"><span>Swift</span><span>SwiftUI</span><span>Combine</span><span>SPM</span></div></div></div></div>
+      <div class="job"><button><h3>Software Engineer II <span>at Vivint</span></h3><span class="when mono">2022 — 2024</span><span class="plus"></span></button><div class="body"><div>Led the iOS Modernization Team, moving a legacy codebase onto current Swift and iOS frameworks and raising coding standards.<div class="chips"><span>Swift</span><span>Objective-C</span><span>UIKit</span></div></div></div></div>
+      <div class="job"><button><h3>Software Engineer I <span>at Vivint</span></h3><span class="when mono">2021 — 2022</span><span class="plus"></span></button><div class="body"><div>Built iOS features in Swift and Objective-C across the app lifecycle.</div></div></div>
+      <div class="job"><button><h3>B.A. Computer Science <span>Hamilton College</span></h3><span class="when mono">Education</span><span class="plus"></span></button><div class="body"><div>Departmental Honors, minor in Mathematics. NCAA student-athlete, three-time Dean's List, NESCAC All-Academic Team.</div></div></div>
+    </div>
+  </section>
+</main>
+
+<footer id="contact"><div class="wrap">
+  <div class="big wave">Let's talk <a href="mailto:cates.connor@gmail.com">agents.</a></div>
+  <button class="copy-mail">cates.connor@gmail.com <span>⧉</span></button>
+  <div class="fl"><span>© 2026 Connor dos Santos Cates</span><nav><a href="https://github.com/ccates83">GitHub</a><a href="https://linkedin.com/in/connorcates">LinkedIn</a><a href="https://medium.com/@connorcates">Medium</a></nav></div>
+</div></footer>
+<div class="scrim"></div>
+<div class="toast">Email copied</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/Flip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+<script>
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+gsap.registerPlugin(ScrollTrigger, SplitText, Flip);
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+/* smooth scroll */
+let lenis;
+if (!reduce) { lenis = new Lenis({ lerp: .1 }); lenis.on('scroll', ScrollTrigger.update); gsap.ticker.add(t => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0); }
+$$('a[href^="#"]').forEach(a => a.addEventListener('click', e => { const id = a.getAttribute('href'); if (id.length < 2) return; e.preventDefault(); lenis ? lenis.scrollTo(id, { offset: -80, duration: 1.4 }) : $(id).scrollIntoView(); }));
+
+/* header: border on scroll + reading ring + active nav pill */
+const fg = $('.ring .fg');
+ScrollTrigger.create({ start: 0, end: 'max', onUpdate: s => { fg.style.strokeDashoffset = 75.4 * (1 - s.progress); $('header.top').classList.toggle('scrolled', s.scroll() > 10); } });
+function pillTo(container, el) { const p = $('.pill', container), cb = container.getBoundingClientRect(), b = el.getBoundingClientRect(); p.style.width = b.width + 'px'; p.style.transform = `translateX(${b.left - cb.left}px)`; }
+const nav = $('.navlinks');
+const setNav = el => { $$('a', nav).forEach(a => a.classList.toggle('on', a === el)); pillTo(nav, el); };
+setNav($('a', nav));
+$$('a', nav).forEach(a => { a.addEventListener('pointerenter', () => pillTo(nav, a)); });
+nav.addEventListener('pointerleave', () => pillTo(nav, $('a.on', nav)));
+['writing', 'work', 'cv', 'contact'].forEach(id => ScrollTrigger.create({ trigger: '#' + id, start: 'top 50%', end: 'bottom 50%', onToggle: s => s.isActive && setNav($(`a[href="#${id}"]`, nav)) }));
+
+/* theme toggle: circular view-transition reveal from the button */
+$('.theme').addEventListener('click', e => {
+  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  const apply = () => document.documentElement.dataset.theme = next;
+  if (!document.startViewTransition || reduce) return apply();
+  const x = e.clientX, y = e.clientY, r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+  const vt = document.startViewTransition(apply);
+  vt.ready.then(() => {
+    document.documentElement.animate({ clipPath: [`circle(0 at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] }, { duration: 700, easing: 'cubic-bezier(.22,1,.36,1)', pseudoElement: '::view-transition-new(root)' });
+  }).catch(() => {});
+  vt.finished.catch(() => {});
+});
+
+/* hero intro: masked line reveal, rolling word, counters */
+gsap.from('.h1 .li', { yPercent: 110, duration: 1.3, stagger: .12, ease: 'expo.out', delay: .15 });
+gsap.from('.hero .status, .hero .lede > *', { y: 24, opacity: 0, duration: 1.2, stagger: .1, ease: 'expo.out', delay: .5 });
+const roll = $('.roller'), words = $$('span', roll);
+gsap.set(roll, { width: words[0].offsetWidth });
+let wi = 0;
+if (!reduce) setInterval(() => {
+  wi++; const w = words[wi];
+  gsap.to(words, { yPercent: -100 * wi, duration: .9, ease: 'expo.inOut' });
+  gsap.to(roll, { width: w.offsetWidth, duration: .9, ease: 'expo.inOut', onComplete: () => { if (wi === words.length - 1) { wi = 0; gsap.set(words, { yPercent: 0 }); } } });
+}, 2400);
+$$('.stat .n').forEach(n => { const o = { v: 0 }; gsap.to(o, { v: +n.dataset.to, duration: 2, ease: 'expo.out', delay: .8, onUpdate: () => n.textContent = Math.round(o.v) }); });
+
+/* section headings: char reveal */
+$$('.rv').forEach(el => { const s = new SplitText(el, { type: 'chars', mask: 'chars' }); gsap.from(s.chars, { yPercent: 100, duration: 1, stagger: .025, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%' } }); });
+$$('.item, .card, .job').forEach(el => gsap.from(el, { y: 40, opacity: 0, duration: 1.1, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 92%' } }));
+
+/* writing: hover follower glides between rows */
+const list = $('.list'), fol = $('.follower');
+$$('.item', list).forEach(it => it.addEventListener('pointerenter', () => {
+  fol.style.opacity = 1; fol.style.height = it.offsetHeight + 'px'; fol.style.transform = `translateY(${it.offsetTop}px)`;
+  it.addEventListener('transitionend', () => { if (it.matches(':hover')) fol.style.height = it.offsetHeight + 'px'; }, { once: true });
+}));
+list.addEventListener('pointerleave', () => fol.style.opacity = 0);
+
+/* writing: filter tabs with Flip reflow */
+const fbar = $('.filters');
+pillTo(fbar, $('button.on', fbar));
+$$('button', fbar).forEach(b => b.addEventListener('click', () => {
+  $$('button', fbar).forEach(x => x.classList.toggle('on', x === b)); pillTo(fbar, b);
+  const items = $$('.item', list), state = Flip.getState(items);
+  items.forEach(i => i.style.display = (b.dataset.f === 'all' || i.dataset.k === b.dataset.f) ? '' : 'none');
+  Flip.from(state, { duration: .7, ease: 'expo.out', absolute: true, scale: false,
+    onEnter: els => gsap.fromTo(els, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: 'expo.out' }),
+    onLeave: els => gsap.to(els, { opacity: 0, y: -10, duration: .3 }), onComplete: () => ScrollTrigger.refresh() });
+}));
+
+/* projects: spotlight + tilt, click to expand (Flip shared-element) */
+$$('.card').forEach(c => {
+  c.addEventListener('pointermove', e => {
+    if (c.classList.contains('open')) return;
+    const b = c.getBoundingClientRect(), x = e.clientX - b.left, y = e.clientY - b.top;
+    c.style.setProperty('--mx', x + 'px'); c.style.setProperty('--my', y + 'px');
+    gsap.to(c, { rotateY: (x / b.width - .5) * 8, rotateX: -(y / b.height - .5) * 8, transformPerspective: 900, duration: .6, ease: 'expo.out' });
+  });
+  c.addEventListener('pointerleave', () => !c.classList.contains('open') && gsap.to(c, { rotateX: 0, rotateY: 0, duration: 1, ease: 'elastic.out(1,.5)' }));
+  c.addEventListener('click', e => { if (!c.classList.contains('open') && !e.target.closest('.close')) openCard(c); });
+  $('.close', c).addEventListener('click', e => { e.stopPropagation(); closeCard(c); });
+});
+let ph;
+function openCard(c) {
+  gsap.set(c, { rotateX: 0, rotateY: 0 });
+  ph = c.cloneNode(true); ph.style.visibility = 'hidden'; c.after(ph);
+  const state = Flip.getState(c);
+  const w = Math.min(720, innerWidth - 32), hgt = Math.min(560, innerHeight - 64);
+  c.classList.add('open'); Object.assign(c.style, { left: (innerWidth - w) / 2 + 'px', top: (innerHeight - hgt) / 2 + 'px', width: w + 'px', height: hgt + 'px' });
+  Flip.from(state, { duration: .8, ease: 'expo.inOut' });
+  gsap.from($('.detail', c), { opacity: 0, y: 20, delay: .4, duration: .6, ease: 'expo.out' });
+  gsap.to('.scrim', { opacity: 1, duration: .5, pointerEvents: 'auto' }); lenis && lenis.stop();
+}
+function closeCard(c) {
+  const state = Flip.getState(c);
+  c.classList.remove('open'); c.removeAttribute('style'); ph.replaceWith(c);
+  Flip.from(state, { duration: .7, ease: 'expo.inOut' });
+  gsap.to('.scrim', { opacity: 0, duration: .4, pointerEvents: 'none' }); lenis && lenis.start();
+}
+$('.scrim').addEventListener('click', () => { const o = $('.card.open'); o && closeCard(o); });
+addEventListener('keydown', e => { if (e.key === 'Escape') { const o = $('.card.open'); o && closeCard(o); } });
+
+/* résumé: spring accordion */
+$$('.job').forEach(j => {
+  const body = $('.body', j);
+  if (j.classList.contains('open')) gsap.set(body, { height: 'auto' });
+  $('button', j).addEventListener('click', () => {
+    const open = !j.classList.contains('open'); j.classList.toggle('open', open);
+    gsap.to(body, { height: open ? 'auto' : 0, duration: open ? .8 : .5, ease: open ? 'elastic.out(1,.85)' : 'expo.out', onComplete: () => ScrollTrigger.refresh() });
+    if (open) gsap.from($$('.body > div > *, .body > div', j), { opacity: 0, y: 12, duration: .6, ease: 'expo.out' });
+  });
+});
+
+/* footer: letters wave away from the cursor */
+const wave = new SplitText('.wave', { type: 'chars', charsClass: 'ch' });
+$('.wave').addEventListener('pointermove', e => wave.chars.forEach(ch => {
+  const b = ch.getBoundingClientRect(), d = Math.abs(e.clientX - (b.left + b.width / 2));
+  ch.style.transform = `translateY(${-Math.max(0, 1 - d / 160) * 22}px)`;
+}));
+$('.wave').addEventListener('pointerleave', () => wave.chars.forEach(ch => ch.style.transform = ''));
+gsap.from(wave.chars, { yPercent: 60, opacity: 0, stagger: .02, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: 'footer', start: 'top 80%' } });
+
+/* copy email with toast */
+$('.copy-mail').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText('cates.connor@gmail.com'); } catch {}
+  gsap.timeline().to('.toast', { transform: 'translate(-50%, 0)', opacity: 1, duration: .6, ease: 'back.out(2)' }).to('.toast', { transform: 'translate(-50%, 220%)', opacity: 0, duration: .5, ease: 'expo.in' }, '+=1.4');
+});
+addEventListener('load', () => { ScrollTrigger.refresh(); setNav($('a.on', nav)); pillTo(fbar, $('button.on', fbar)); });
+</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connor Cates — Direction A: Editorial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f6f2ea; --ink: #1c1a17; --muted: #6d665b; --rule: #d9d1c3; --accent: #b4381f;
+    --serif: "Newsreader", Georgia, serif; --sans: "Inter", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--paper); color: var(--ink); font-family: var(--serif); font-size: 19px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  header.top { display: flex; justify-content: space-between; align-items: baseline; padding: 28px 0; border-bottom: 1px solid var(--ink); font-family: var(--sans); font-size: 14px; }
+  header.top .mark { font-family: var(--serif); font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  header.top nav { display: flex; gap: 28px; }
+  header.top nav a:hover { color: var(--accent); }
+
+  .hero { display: grid; grid-template-columns: 1fr 300px; gap: 64px; padding: 88px 0 72px; border-bottom: 1px solid var(--rule); }
+  .eyebrow { font-family: var(--sans); font-size: 12px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent); font-weight: 600; }
+  .hero h1 { font-size: clamp(44px, 7vw, 84px); line-height: 1.02; font-weight: 400; letter-spacing: -0.025em; margin: 20px 0 28px; }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero p.lede { font-size: 22px; line-height: 1.5; color: #3a362f; max-width: 34ch; font-weight: 300; }
+  .hero aside { border-left: 1px solid var(--rule); padding-left: 28px; font-family: var(--sans); font-size: 14px; color: var(--muted); align-self: end; }
+  .hero aside dt { text-transform: uppercase; letter-spacing: 0.12em; font-size: 11px; margin-top: 18px; }
+  .hero aside dt:first-child { margin-top: 0; }
+  .hero aside dd { color: var(--ink); font-size: 15px; margin-top: 4px; }
+
+  section { padding: 72px 0; border-bottom: 1px solid var(--rule); }
+  .sec-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 40px; }
+  .sec-head h2 { font-size: 15px; font-family: var(--sans); text-transform: uppercase; letter-spacing: 0.14em; font-weight: 600; }
+  .sec-head a { font-family: var(--sans); font-size: 14px; color: var(--muted); }
+  .sec-head a:hover { color: var(--accent); }
+
+  .feature { display: grid; grid-template-columns: 1.3fr 1fr; gap: 56px; }
+  .lead-post .meta, .post .meta { font-family: var(--sans); font-size: 13px; color: var(--muted); }
+  .lead-post h3 { font-size: 46px; line-height: 1.08; font-weight: 400; letter-spacing: -0.02em; margin: 14px 0 18px; }
+  .lead-post h3 a:hover, .post h3 a:hover { color: var(--accent); }
+  .lead-post p { color: #3a362f; font-size: 20px; }
+  .readmore { display: inline-block; margin-top: 22px; font-family: var(--sans); font-size: 14px; font-weight: 500; border-bottom: 1px solid var(--accent); color: var(--accent); }
+  .post { padding: 0 0 26px; margin-bottom: 26px; border-bottom: 1px solid var(--rule); }
+  .post:last-child { border-bottom: 0; }
+  .post h3 { font-size: 26px; line-height: 1.2; font-weight: 400; margin: 6px 0 8px; }
+  .post p { font-size: 17px; color: var(--muted); }
+  .tag { font-family: var(--sans); font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); }
+
+  .projects { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0; border-top: 1px solid var(--rule); }
+  .proj { padding: 32px 32px 32px 0; border-bottom: 1px solid var(--rule); }
+  .proj:nth-child(even) { padding: 32px 0 32px 32px; border-left: 1px solid var(--rule); }
+  .proj .num { font-family: var(--sans); font-size: 12px; color: var(--muted); }
+  .proj h3 { font-size: 30px; font-weight: 400; margin: 8px 0 10px; letter-spacing: -0.01em; }
+  .proj p { font-size: 17px; color: #3a362f; }
+  .proj .stack { font-family: var(--sans); font-size: 12px; color: var(--muted); margin-top: 14px; }
+
+  .cv { display: grid; grid-template-columns: 200px 1fr; gap: 0 48px; }
+  .cv .when { font-family: var(--sans); font-size: 13px; color: var(--muted); padding: 22px 0; border-top: 1px solid var(--rule); }
+  .cv .what { padding: 20px 0; border-top: 1px solid var(--rule); }
+  .cv .what h3 { font-size: 22px; font-weight: 500; }
+  .cv .what h3 span { color: var(--muted); font-weight: 300; font-style: italic; }
+  .cv .what p { font-size: 17px; color: #3a362f; margin-top: 6px; max-width: 62ch; }
+
+  footer { padding: 72px 0 56px; display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; }
+  footer h2 { font-size: clamp(34px, 5vw, 56px); font-weight: 400; letter-spacing: -0.02em; line-height: 1.1; }
+  footer h2 a { color: var(--accent); font-style: italic; border-bottom: 1px solid currentColor; }
+  footer .links { font-family: var(--sans); font-size: 14px; display: flex; gap: 22px; color: var(--muted); }
+
+  @media (max-width: 820px) {
+    .hero, .feature, .cv { grid-template-columns: 1fr; gap: 32px; }
+    .hero aside { border-left: 0; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 24px; }
+    .projects { grid-template-columns: 1fr; }
+    .proj, .proj:nth-child(even) { padding: 28px 0; border-left: 0; }
+    .cv .when { padding-bottom: 0; } .cv .what { border-top: 0; padding-top: 6px; }
+    header.top nav { gap: 16px; } footer { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="#">Connor Cates</a>
+    <nav><a href="#writing">Writing</a><a href="#work">Work</a><a href="#cv">Résumé</a><a href="#contact">Contact</a></nav>
+  </header>
+
+  <div class="hero">
+    <div>
+      <div class="eyebrow">Software engineer · Boston</div>
+      <h1>Less orchestration, <em>more determinism.</em></h1>
+      <p class="lede">I'm a senior iOS engineer at Vivint. Lately I've been rebuilding how I work with Claude, and writing down what the measurements say.</p>
+    </div>
+    <aside>
+      <dl>
+        <dt>Now</dt><dd>Senior Software Engineer, Vivint</dd>
+        <dt>Writing</dt><dd>A series on running Claude Code at work</dd>
+        <dt>Shipping</dt><dd>Fin, on TestFlight</dd>
+        <dt>Studied</dt><dd>Computer Science, Hamilton College</dd>
+      </dl>
+    </aside>
+  </div>
+
+  <section id="writing">
+    <div class="sec-head"><h2>Writing</h2><a href="https://medium.com/@connorcates">All posts on Medium →</a></div>
+    <div class="feature">
+      <article class="lead-post">
+        <div class="meta"><span class="tag">Series anchor</span> &nbsp;·&nbsp; Sep 26, 2026</div>
+        <h3><a href="https://medium.com/@connorcates/from-agent-swarm-to-shell-script-f515498ecb9e">From Agent Swarm to Shell Script</a></h3>
+        <p>Five months, one setup: from a persona-agent framework with its own MCP servers to a shell dispatcher that starts a model only when there is real work to produce. Each step came from a measurement or an incident.</p>
+        <a class="readmore" href="https://medium.com/@connorcates/from-agent-swarm-to-shell-script-f515498ecb9e">Read the essay</a>
+      </article>
+      <div>
+        <article class="post">
+          <div class="meta">Sep 28, 2026</div>
+          <h3><a href="https://medium.com/@connorcates/routing-subagents-to-the-right-model-b2731f4a97c4">Routing Subagents to the Right Model</a></h3>
+          <p>A Haiku classifier, three reversals on which way it should fail, and Apple's on-device model as the free router.</p>
+        </article>
+        <article class="post">
+          <div class="meta">Coming next</div>
+          <h3>Measuring Your Claude Code Setup</h3>
+          <p>What to count before and after you change anything.</p>
+        </article>
+        <article class="post">
+          <div class="meta">Coming next</div>
+          <h3>Revert, Not Approve</h3>
+          <p>Autonomy is safe because every change is one revertable commit.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="sec-head"><h2>Selected work</h2><a href="https://github.com/ccates83">GitHub →</a></div>
+    <div class="projects">
+      <div class="proj"><div class="num">01 — iOS app</div><h3>Fin</h3><p>A routine tracker for puppies. Hand-rolled CloudKit sync on CKSyncEngine with a zone per dog. On TestFlight.</p><div class="stack">Swift · SwiftUI · CloudKit</div></div>
+      <div class="proj"><div class="num">02 — Automation</div><h3>Auto Dogfluencer</h3><p>A fully automated Instagram for my two dogs: a Python pipeline that shells out to Claude and posts three times a day.</p><div class="stack">Python · Claude Code headless</div></div>
+      <div class="proj"><div class="num">03 — Tooling</div><h3>Script-first dispatcher</h3><p>The setup the blog series documents. Rules over fetched data live in tested scripts; a model starts only to write code, judge a review, or draft prose.</p><div class="stack">Shell · Claude Code · agent view</div></div>
+      <div class="proj"><div class="num">04 — Practice</div><h3>SwiftUILab</h3><p>A catalog of hand-written SwiftUI experiments to keep the craft sharp. Claude reviews; it never writes the first version.</p><div class="stack">SwiftUI</div></div>
+    </div>
+  </section>
+
+  <section id="cv">
+    <div class="sec-head"><h2>Résumé</h2><a href="#">Download PDF →</a></div>
+    <div class="cv">
+      <div class="when">Mar 2024 — Present</div>
+      <div class="what"><h3>Senior Software Engineer <span>at Vivint</span></h3><p>Lead mobile development on a major app re-architecture with user-driven information architecture and progressive rollout. Architected the networking and data-layer restructure; set company-wide iOS standards; interview and mentor.</p></div>
+      <div class="when">Apr 2022 — Mar 2024</div>
+      <div class="what"><h3>Software Engineer II <span>at Vivint</span></h3><p>Led the iOS Modernization Team: moved a legacy Objective-C codebase toward current Swift and iOS frameworks.</p></div>
+      <div class="when">Jul 2021 — Apr 2022</div>
+      <div class="what"><h3>Software Engineer I <span>at Vivint</span></h3><p>Built iOS features in Swift and Objective-C.</p></div>
+      <div class="when">Education</div>
+      <div class="what"><h3>B.A. Computer Science <span>Hamilton College</span></h3><p>Departmental Honors, minor in Mathematics. NCAA student-athlete, NESCAC All-Academic.</p></div>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <h2>Building something with agents?<br><a href="mailto:cates.connor@gmail.com">Write to me.</a></h2>
+    <div class="links"><a href="https://github.com/ccates83">GitHub</a><a href="https://linkedin.com/in/connorcates">LinkedIn</a><a href="https://medium.com/@connorcates">Medium</a></div>
+  </footer>
+</div>
+</body>
+</html>

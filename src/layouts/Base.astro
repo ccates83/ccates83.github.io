@@ -1,0 +1,67 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import { person } from '../data/site';
+
+interface Props { title?: string; description?: string; loader?: boolean; footer?: boolean }
+const { title, description = `${person.name} — ${person.positioning}. ${person.bio}`, loader = false, footer = true } = Astro.props;
+const fullTitle = title ? `${title} · ${person.name}` : `${person.name} — ${person.positioning}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{fullTitle}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <meta property="og:title" content={fullTitle} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content={canonical} />
+  <meta name="theme-color" content="#08090a" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  <script is:inline>
+    // Set before first paint: lets CSS hold intro elements in their start state,
+    // and hides the loader for return visits so it never flashes.
+    document.documentElement.classList.add('js');
+    try { if (sessionStorage.getItem('cc-seen') || matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('no-loader'); } catch (e) {}
+  </script>
+  <style is:global>
+    html.no-loader .loader { display: none; }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  {loader && (
+    <div class="loader" aria-hidden="true">
+      <div class="name"><span class="ln">{person.name}</span></div>
+      <div class="count mono">000</div>
+      <div class="bar"></div>
+    </div>
+  )}
+  <div class="progress" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"></div>
+  <div class="cursor-ring" aria-hidden="true"><span>View</span></div>
+  <Nav />
+  <main id="main"><slot /></main>
+  {footer && <Footer />}
+  <script>
+    import '../scripts/core';
+  </script>
+</body>
+</html>
+
+<style is:global>
+  .loader { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: grid; place-items: center; }
+  .loader .name { font-size: clamp(28px, 5vw, 56px); font-weight: 500; letter-spacing: -.03em; overflow: hidden; }
+  .loader .ln { display: block; transform: translateY(110%); }
+  .loader .count { position: absolute; bottom: 32px; right: 32px; color: var(--muted); font-size: 13px; }
+  .loader .bar { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+</style>

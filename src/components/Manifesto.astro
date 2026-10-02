@@ -1,0 +1,32 @@
+---
+import { principles } from '../data/site';
+---
+<section class="section manifesto" aria-labelledby="approach">
+  <h2 id="approach" class="label mono">00 — Approach</h2>
+  <p class="words">Anything that is rules over fetched data belongs in a <span class="serif">script you can test,</span> not a prompt you have to trust. I measure before and after, and I make every autonomous change <span class="serif">one revertable commit.</span></p>
+  <ol class="principles">
+    {principles.map((p, i) => (<li><span class="n mono">0{i + 1}</span><h3>{p}</h3></li>))}
+  </ol>
+</section>
+
+<style>
+  .words { font-size: clamp(30px, 4.4vw, 64px); line-height: 1.12; letter-spacing: -.03em; max-width: 22ch; }
+  .words :global(.w) { opacity: .14; }
+  .words .serif { color: var(--accent2); }
+  .principles { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); margin-top: 120px; border: 1px solid var(--line); }
+  .principles li { background: var(--bg); padding: 32px; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between; }
+  h3 { font-size: 24px; font-weight: 500; letter-spacing: -.02em; line-height: 1.15; }
+  .n { color: var(--accent); }
+  @media (max-width: 860px) { .principles { grid-template-columns: 1fr; margin-top: 72px; } .principles li { min-height: 150px; } }
+  @media (prefers-reduced-motion: reduce) { .words :global(.w) { opacity: 1; } }
+</style>
+
+<script>
+  import { gsap, SplitText, ready, reduce } from '../scripts/core';
+  ready.then(() => {
+    const p = document.querySelector<HTMLElement>('.manifesto .words')!;
+    const s = new SplitText(p, { type: 'words', wordsClass: 'w' });
+    if (!reduce) gsap.to(s.words, { opacity: 1, stagger: 0.1, ease: 'none', scrollTrigger: { trigger: p, start: 'top 75%', end: 'bottom 45%', scrub: true } });
+    gsap.from('.principles li', { y: 60, opacity: 0, duration: 1.2, stagger: 0.12, ease: 'expo.out', scrollTrigger: { trigger: '.principles', start: 'top 85%' } });
+  });
+</script>

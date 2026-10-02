@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Manifesto from '../components/Manifesto.astro';
+import PostList from '../components/PostList.astro';
+import Eras from '../components/Eras.astro';
+import WorkStack from '../components/WorkStack.astro';
+import Timeline from '../components/Timeline.astro';
+
+const posts = (await getCollection('posts')).sort((a, b) => a.data.number - b.data.number).slice(0, 5);
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+---
+<Base loader>
+  <Hero />
+  <Manifesto />
+
+  <section class="section" id="writing" aria-labelledby="writing-title">
+    <div class="head">
+      <h2 id="writing-title" class="label mono">01 — Writing</h2>
+      <a class="more mono" href="/writing">All writing →</a>
+    </div>
+    <PostList posts={posts} />
+  </section>
+
+  <Eras />
+
+  <section class="section" id="work" aria-labelledby="work-title">
+    <h2 id="work-title" class="label mono">03 — Selected work</h2>
+    <WorkStack projects={projects} />
+  </section>
+
+  <section class="section cv" id="cv" aria-labelledby="cv-title">
+    <div>
+      <p class="label mono">04 — Résumé</p>
+      <h2 id="cv-title" data-reveal="lines">Five years of iOS, <span class="serif accent">one company.</span></h2>
+    </div>
+    <Timeline><a class="dl mono" href="/resume">Full résumé →</a></Timeline>
+  </section>
+</Base>
+
+<style>
+  .head { display: flex; justify-content: space-between; align-items: baseline; }
+  .more { color: var(--muted); transition: color .3s; } .more:hover { color: var(--text); }
+  .cv { display: grid; grid-template-columns: 1fr 2fr; gap: 64px; }
+  .cv h2 { font-size: clamp(42px, 6vw, 92px); letter-spacing: -.045em; line-height: .95; font-weight: 500; position: sticky; top: 120px; }
+  .dl { display: inline-flex; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 99px; padding: 12px 20px; transition: border-color .3s, background .3s; }
+  .dl:hover { border-color: var(--accent); background: var(--bg2); }
+  @media (max-width: 860px) { .cv { grid-template-columns: 1fr; } .cv h2 { position: static; } }
+</style>

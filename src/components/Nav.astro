@@ -1,0 +1,33 @@
+---
+import { person } from '../data/site';
+const path = Astro.url.pathname.replace(/\.html$/, '');
+const items = [
+  { href: '/writing', label: 'Writing' },
+  { href: '/#arc', label: 'The arc' },
+  { href: '/#work', label: 'Work' },
+  { href: '/resume', label: 'Résumé' },
+  { href: '#contact', label: 'Contact' },
+];
+---
+<nav class="top" aria-label="Primary">
+  <a class="brand" href="/" aria-label={`${person.name}, home`}><i aria-hidden="true"></i>{person.name}</a>
+  <ul>
+    {items.map((i) => (
+      <li><a href={i.href} aria-current={path === i.href ? 'page' : undefined}><span class="r" data-t={i.label}>{i.label}</span></a></li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  nav.top { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; justify-content: space-between; align-items: center; padding: 22px var(--gutter); mix-blend-mode: difference; color: #fff; view-transition-name: nav; }
+  .brand { font-weight: 500; letter-spacing: -.01em; display: flex; gap: 10px; align-items: center; }
+  .brand i { width: 8px; height: 8px; border-radius: 50%; background: #fff; display: inline-block; animation: pulse 2.4s var(--ease) infinite; }
+  @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1 } 50% { transform: scale(.6); opacity: .5 } }
+  ul { display: flex; gap: 6px; list-style: none; }
+  ul a { display: inline-block; padding: 8px 14px; font-family: var(--mono); font-size: 12px; text-transform: uppercase; overflow: hidden; position: relative; }
+  ul a[aria-current="page"]::after { content: ""; position: absolute; left: 14px; right: 14px; bottom: 4px; height: 1px; background: #fff; }
+  .r { display: block; transition: transform .5s var(--ease); }
+  .r::after { content: attr(data-t); position: absolute; left: 0; top: 100%; }
+  ul a:hover .r { transform: translateY(-100%); }
+  @media (max-width: 860px) { ul li:not(:last-child) { display: none; } }
+</style>

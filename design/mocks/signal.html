@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connor Cates — Signal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.css">
+<style>
+  :root {
+    --bg: #08090a; --bg2: #0f1012; --line: rgba(255,255,255,.08); --text: #ededee; --muted: #8b8d93; --dim: #55575d;
+    --accent: #ff5b2e; --accent2: #ffb38f;
+    --sans: "Geist", system-ui, sans-serif; --mono: "Geist Mono", ui-monospace, monospace; --serif: "Instrument Serif", Georgia, serif;
+    --ease: cubic-bezier(.22,1,.36,1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: var(--bg); }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: var(--accent); color: #000; }
+  .mono { font-family: var(--mono); font-size: 12px; letter-spacing: .02em; text-transform: uppercase; }
+  .serif { font-family: var(--serif); font-weight: 400; font-style: italic; }
+  body.loading { overflow: hidden; }
+
+  /* grain */
+  body::after { content: ""; position: fixed; inset: -50%; pointer-events: none; z-index: 90; opacity: .05;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    animation: grain 1s steps(6) infinite; }
+  @keyframes grain { 0%{transform:translate(0,0)} 25%{transform:translate(-3%,2%)} 50%{transform:translate(2%,-3%)} 75%{transform:translate(-2%,-1%)} 100%{transform:translate(1%,3%)} }
+
+  /* loader */
+  .loader { position: fixed; inset: 0; z-index: 100; background: var(--bg); display: grid; place-items: center; }
+  .loader .count { font-family: var(--mono); font-size: 13px; color: var(--muted); position: absolute; bottom: 32px; right: 32px; }
+  .loader .name { font-size: clamp(28px, 5vw, 56px); font-weight: 500; letter-spacing: -.03em; overflow: hidden; }
+  .loader .bar { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+
+  /* cursor */
+  .cursor, .cursor-ring { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 95; border-radius: 50%; }
+  .cursor { width: 6px; height: 6px; background: var(--text); margin: -3px 0 0 -3px; mix-blend-mode: difference; }
+  .cursor-ring { width: 40px; height: 40px; margin: -20px 0 0 -20px; border: 1px solid rgba(255,255,255,.35); display: grid; place-items: center; transition: width .4s var(--ease), height .4s var(--ease), margin .4s var(--ease), background .3s, border-color .3s; }
+  .cursor-ring span { font-family: var(--mono); font-size: 10px; color: #000; opacity: 0; transition: opacity .2s; text-transform: uppercase; letter-spacing: .05em; }
+  .cursor-ring.big { width: 84px; height: 84px; margin: -42px 0 0 -42px; background: var(--accent); border-color: var(--accent); }
+  .cursor-ring.big span { opacity: 1; }
+  .cursor-ring.link { width: 56px; height: 56px; margin: -28px 0 0 -28px; border-color: var(--accent); }
+  @media (hover: none) { .cursor, .cursor-ring { display: none; } }
+
+  /* nav */
+  nav.top { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; justify-content: space-between; align-items: center; padding: 22px 32px; mix-blend-mode: difference; }
+  nav.top .brand { font-weight: 500; letter-spacing: -.01em; display: flex; gap: 10px; align-items: center; }
+  nav.top .brand i { width: 8px; height: 8px; border-radius: 50%; background: #fff; display: inline-block; animation: pulse 2.4s var(--ease) infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1 } 50% { transform: scale(.6); opacity: .5 } }
+  nav.top ul { display: flex; gap: 6px; list-style: none; }
+  nav.top ul a { display: inline-block; padding: 8px 14px; font-family: var(--mono); font-size: 12px; text-transform: uppercase; overflow: hidden; position: relative; }
+  nav.top ul a .r { display: block; transition: transform .5s var(--ease); }
+  nav.top ul a .r::after { content: attr(data-t); position: absolute; left: 0; top: 100%; }
+  nav.top ul a:hover .r { transform: translateY(-100%); }
+  .progress { position: fixed; top: 0; left: 0; height: 2px; background: var(--accent); width: 100%; transform-origin: left; transform: scaleX(0); z-index: 60; }
+
+  /* hero */
+  .hero { height: 320vh; position: relative; }
+  .hero .stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+  .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero .copy { position: absolute; left: 32px; right: 32px; bottom: 9vh; display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 32px; pointer-events: none; }
+  .hero h1 { font-size: clamp(56px, 13vw, 210px); line-height: .86; letter-spacing: -.055em; font-weight: 500; }
+  .hero h1 .line { display: block; overflow: hidden; padding-bottom: .04em; }
+  .hero h1 .serif { letter-spacing: -.02em; color: var(--accent); }
+  .hero .meta { text-align: right; color: var(--muted); max-width: 300px; }
+  .hero .meta p { font-family: var(--sans); text-transform: none; letter-spacing: 0; font-size: 15px; line-height: 1.5; margin-top: 10px; color: var(--text); }
+  .hero .phase { position: absolute; top: 96px; left: 32px; right: 32px; display: flex; justify-content: space-between; color: var(--muted); }
+  .hero .phase .now { color: var(--text); }
+  .hero .phase .now b { color: var(--accent); font-weight: 400; }
+  .hero .scrollhint { position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); color: var(--dim); display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .hero .scrollhint i { width: 1px; height: 40px; background: linear-gradient(var(--muted), transparent); animation: drip 1.8s var(--ease) infinite; transform-origin: top; }
+  @keyframes drip { 0% { transform: scaleY(0) } 50% { transform: scaleY(1) } 100% { transform: scaleY(1); opacity: 0 } }
+
+  section { position: relative; padding: 160px 32px; }
+  .label { display: flex; gap: 16px; align-items: center; color: var(--muted); margin-bottom: 56px; }
+  .label::before { content: ""; width: 32px; height: 1px; background: var(--accent); }
+
+  /* manifesto: words light up */
+  .manifesto p { font-size: clamp(30px, 4.4vw, 64px); line-height: 1.12; letter-spacing: -.03em; font-weight: 400; max-width: 22ch; }
+  .manifesto .w { opacity: .14; display: inline-block; }
+  .manifesto .serif { color: var(--accent2); }
+  .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); margin-top: 120px; border: 1px solid var(--line); }
+  .principles div { background: var(--bg); padding: 32px; min-height: 220px; display: flex; flex-direction: column; justify-content: space-between; }
+  .principles h3 { font-size: 24px; font-weight: 500; letter-spacing: -.02em; line-height: 1.15; }
+  .principles .n { color: var(--accent); }
+
+  /* writing */
+  .posts { border-top: 1px solid var(--line); }
+  .post { display: grid; grid-template-columns: 80px 1fr 180px 40px; gap: 24px; align-items: center; padding: 34px 0; border-bottom: 1px solid var(--line); position: relative; }
+  .post::before { content: ""; position: absolute; inset: 0; background: var(--bg2); transform: scaleY(0); transform-origin: bottom; transition: transform .6s var(--ease); z-index: -1; }
+  .post:hover::before { transform: scaleY(1); }
+  .post h3 { font-size: clamp(24px, 3.4vw, 46px); font-weight: 400; letter-spacing: -.035em; line-height: 1.05; transition: transform .6s var(--ease), color .4s; }
+  .post:hover h3 { transform: translateX(16px); }
+  .post .d { color: var(--dim); }
+  .post .st { color: var(--muted); }
+  .post.live .st { color: var(--accent); }
+  .post .arr { font-size: 22px; transition: transform .6s var(--ease); color: var(--muted); }
+  .post:hover .arr { transform: rotate(-45deg); color: var(--text); }
+  .preview { position: fixed; left: 0; top: 0; width: 340px; pointer-events: none; z-index: 40; opacity: 0; transform: scale(.6); }
+  .preview .card { background: var(--accent); color: #120804; border-radius: 4px; padding: 22px; height: 220px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; }
+  .preview .card p { font-size: 17px; line-height: 1.35; letter-spacing: -.01em; }
+  .preview .card .mono { opacity: .7; }
+
+  /* eras horizontal */
+  .eras { padding: 0; height: 100vh; overflow: hidden; }
+  .eras .track { display: flex; height: 100%; align-items: center; gap: 0; padding-left: 32px; will-change: transform; }
+  .eras .intro { flex: 0 0 min(560px, 80vw); padding-right: 64px; }
+  .eras .intro h2 { font-size: clamp(42px, 6vw, 92px); letter-spacing: -.045em; line-height: .95; font-weight: 500; margin-top: 24px; }
+  .era { flex: 0 0 min(440px, 78vw); height: 64vh; border-left: 1px solid var(--line); padding: 32px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+  .era .big { font-size: clamp(90px, 14vw, 200px); font-weight: 300; letter-spacing: -.06em; line-height: .8; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,.18); }
+  .era.now .big { -webkit-text-stroke: 0; color: var(--accent); }
+  .era h3 { font-size: 30px; font-weight: 500; letter-spacing: -.025em; margin: 10px 0 10px; }
+  .era p { color: var(--muted); max-width: 32ch; }
+  .era .dots { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 20px; max-width: 220px; }
+  .era .dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); opacity: .6; }
+  .era.now .dots i { background: var(--accent); opacity: 1; }
+  .eras .bar { position: absolute; left: 32px; right: 32px; bottom: 40px; height: 1px; background: var(--line); }
+  .eras .bar i { position: absolute; inset: 0; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+
+  /* work stack */
+  .stack { position: relative; }
+  .wcard { position: sticky; top: 12vh; height: 76vh; border-radius: 20px; padding: 44px; margin-bottom: 6vh; display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; overflow: hidden; transform-origin: center top; border: 1px solid var(--line); }
+  .wcard h3 { font-size: clamp(48px, 8vw, 120px); letter-spacing: -.055em; font-weight: 500; line-height: .9; }
+  .wcard .desc { font-size: 19px; max-width: 34ch; margin-top: 24px; opacity: .85; }
+  .wcard .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 28px; }
+  .wcard .chips span { font-family: var(--mono); font-size: 11px; text-transform: uppercase; border: 1px solid currentColor; border-radius: 99px; padding: 5px 12px; opacity: .7; }
+  .wcard .left { display: flex; flex-direction: column; justify-content: space-between; }
+  .wcard .vis { border-radius: 12px; position: relative; overflow: hidden; }
+  .c1 { background: #121316; } .c1 .vis { background: radial-gradient(circle at 30% 30%, #2b3f5c, #0e1520); }
+  .c2 { background: #1a0d08; color: #ffe3d6; } .c2 .vis { background: radial-gradient(circle at 70% 40%, #ff5b2e, #4a1606); }
+  .c3 { background: #e9e7e1; color: #111; } .c3 .vis { background: #111; }
+  .c4 { background: #101a12; color: #dff3df; } .c4 .vis { background: radial-gradient(circle at 50% 60%, #3c7a46, #0b150d); }
+  .phone { position: absolute; left: 50%; top: 14%; width: 46%; aspect-ratio: 9/19; transform: translateX(-50%); border-radius: 30px; background: #0a0a0a; border: 6px solid #222; box-shadow: 0 40px 80px rgba(0,0,0,.5); padding: 18px 12px; display: flex; flex-direction: column; gap: 8px; }
+  .phone i { display: block; height: 34px; border-radius: 10px; background: #1b2636; }
+  .phone i:nth-child(1) { height: 60px; background: linear-gradient(135deg, #4b7bb8, #2b3f5c); }
+  .term { position: absolute; inset: 24px; font-family: var(--mono); font-size: 13px; color: #9a9a9a; line-height: 1.9; white-space: pre; }
+  .term b { color: #ff5b2e; font-weight: 400; } .term em { color: #eee; font-style: normal; }
+  .grid-sq { position: absolute; inset: 28px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .grid-sq i { border-radius: 8px; background: rgba(255,255,255,.12); }
+  .grid-sq i:nth-child(3n+1) { background: rgba(255,200,170,.45); }
+  .grid-sq i:nth-child(4) { background: rgba(255,255,255,.7); }
+
+  /* cv */
+  .cv { display: grid; grid-template-columns: 1fr 2fr; gap: 64px; }
+  .cv h2 { font-size: clamp(42px, 6vw, 92px); letter-spacing: -.045em; line-height: .95; font-weight: 500; position: sticky; top: 120px; }
+  .cv .rows { position: relative; padding-left: 40px; }
+  .cv .rail { position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: var(--line); }
+  .cv .rail i { position: absolute; inset: 0; background: var(--accent); transform-origin: top; transform: scaleY(0); }
+  .job { padding: 0 0 64px; position: relative; }
+  .job::before { content: ""; position: absolute; left: -44px; top: 8px; width: 9px; height: 9px; border-radius: 50%; background: var(--bg); border: 1px solid var(--accent); }
+  .job .when { color: var(--dim); }
+  .job h3 { font-size: 30px; font-weight: 500; letter-spacing: -.025em; margin: 8px 0 10px; }
+  .job h3 span { color: var(--muted); font-weight: 300; }
+  .job p { color: var(--muted); font-size: 17px; max-width: 58ch; }
+  .dl { display: inline-flex; margin-top: 8px; gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 99px; padding: 12px 20px; font-family: var(--mono); font-size: 12px; text-transform: uppercase; }
+
+  /* footer */
+  footer { padding: 120px 0 32px; border-top: 1px solid var(--line); overflow: hidden; }
+  .marquee { white-space: nowrap; font-size: clamp(80px, 15vw, 240px); letter-spacing: -.06em; font-weight: 500; line-height: 1; }
+  .marquee .inner { display: inline-flex; will-change: transform; }
+  .marquee span { padding-right: .35em; }
+  .marquee .serif { color: var(--accent); }
+  .foot { display: flex; justify-content: space-between; align-items: end; padding: 80px 32px 0; gap: 32px; flex-wrap: wrap; }
+  .mag { display: inline-grid; place-items: center; width: 180px; height: 180px; border-radius: 50%; background: var(--accent); color: #120804; font-weight: 500; font-size: 17px; }
+  .mag span { display: inline-block; pointer-events: none; }
+  .foot .links { display: flex; gap: 28px; color: var(--muted); }
+  .foot .links a:hover { color: var(--text); }
+  .foot .clock { color: var(--dim); }
+
+  @media (max-width: 860px) {
+    nav.top { padding: 18px 16px; } nav.top ul li:not(:last-child) { display: none; }
+    .hero .phase .from, .hero .scrollhint { display: none; } .hero .phase { justify-content: flex-start; }
+    section { padding: 110px 16px; }
+    .hero .copy { left: 16px; right: 16px; grid-template-columns: 1fr; } .hero .meta { text-align: left; } .hero .phase { left: 16px; right: 16px; }
+    .principles { grid-template-columns: 1fr; }
+    .post { grid-template-columns: 1fr 30px; } .post .d, .post .st { display: none; }
+    .wcard { grid-template-columns: 1fr; padding: 28px; } .wcard .vis { min-height: 180px; }
+    .cv { grid-template-columns: 1fr; } .cv h2 { position: static; }
+    .foot { padding: 60px 16px 0; } .mag { width: 140px; height: 140px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    body::after { animation: none; } .manifesto .w { opacity: 1; }
+  }
+</style>
+</head>
+<body class="loading">
+
+<div class="loader"><div class="name"><span class="ln">Connor Cates</span></div><div class="count mono">000</div><div class="bar"></div></div>
+<div class="progress"></div>
+<div class="cursor"></div><div class="cursor-ring"><span>Read</span></div>
+
+<nav class="top">
+  <a class="brand" href="#"><i></i>Connor Cates</a>
+  <ul>
+    <li><a href="#writing" data-cursor="link"><span class="r" data-t="Writing">Writing</span></a></li>
+    <li><a href="#eras" data-cursor="link"><span class="r" data-t="The arc">The arc</span></a></li>
+    <li><a href="#work" data-cursor="link"><span class="r" data-t="Work">Work</span></a></li>
+    <li><a href="#cv" data-cursor="link"><span class="r" data-t="Résumé">Résumé</span></a></li>
+    <li><a href="#contact" data-cursor="link"><span class="r" data-t="Contact">Contact</span></a></li>
+  </ul>
+</nav>
+
+<div class="hero" id="top">
+  <div class="stage">
+    <canvas id="swarm"></canvas>
+    <div class="phase mono"><span class="from">More model ·  persona agents · MCP servers · watchers</span><span class="now">→ <b>Less model</b> · one script, a model only for real work</span></div>
+    <div class="copy">
+      <h1><span class="line"><span class="li">Connor</span></span><span class="line"><span class="li">Cates<span class="serif">.</span></span></span></h1>
+      <div class="meta mono">Engineer building with AI · Boston<p>iOS engineer at Vivint. I spent five months cutting my agent setup down to the parts that earn their keep, and I write up what I measure.</p></div>
+    </div>
+    <div class="scrollhint mono"><span>Scroll</span><i></i></div>
+  </div>
+</div>
+
+<section class="manifesto">
+  <div class="label mono">00 — Approach</div>
+  <p class="split-words">Anything that is rules over fetched data belongs in a <span class="serif">script you can test,</span> not a prompt you have to trust. I measure before and after, and I make every autonomous change <span class="serif">one revertable commit.</span></p>
+  <div class="principles">
+    <div><span class="n mono">01</span><h3>Determinism beats orchestration.</h3></div>
+    <div><span class="n mono">02</span><h3>Measure before and after.</h3></div>
+    <div><span class="n mono">03</span><h3>Safety through revert, not approval.</h3></div>
+  </div>
+</section>
+
+<section id="writing">
+  <div class="label mono">01 — Writing · Medium</div>
+  <div class="posts">
+    <a class="post live" href="https://medium.com/@connorcates/from-agent-swarm-to-shell-script-f515498ecb9e" data-preview="Five months from a persona-agent framework to a dispatcher that starts a model only when there's real work." data-tag="Essay 01 · anchor">
+      <span class="d mono">01</span><h3>From Agent Swarm to Shell Script</h3><span class="st mono">Sep 26, 2026</span><span class="arr">→</span></a>
+    <a class="post live" href="https://medium.com/@connorcates/routing-subagents-to-the-right-model-b2731f4a97c4" data-preview="A Haiku classifier, three reversals on how it should fail, and Apple's on-device model as a free router." data-tag="Essay 02">
+      <span class="d mono">02</span><h3>Routing Subagents to the Right Model</h3><span class="st mono">Sep 28, 2026</span><span class="arr">→</span></a>
+    <a class="post" href="#" data-preview="What to count before you change anything, and after." data-tag="In review">
+      <span class="d mono">03</span><h3>Measuring Your Claude Code Setup</h3><span class="st mono">Up next</span><span class="arr">→</span></a>
+    <a class="post" href="#" data-preview="Autonomy is acceptable because every change is one commit with a revert SHA, not because a human signs off." data-tag="In review">
+      <span class="d mono">04</span><h3>Revert, Not Approve</h3><span class="st mono">Up next</span><span class="arr">→</span></a>
+    <a class="post" href="#" data-preview="Why the plain filesystem ended up being the most useful agent framework in the setup." data-tag="In review">
+      <span class="d mono">05</span><h3>The Filesystem Is the Agent Framework</h3><span class="st mono">Up next</span><span class="arr">→</span></a>
+  </div>
+</section>
+<div class="preview"><div class="card"><span class="mono tag"></span><p></p></div></div>
+
+<section class="eras" id="eras">
+  <div class="track">
+    <div class="intro"><div class="label mono" style="margin-bottom:0">02 — The arc</div><h2>From more model to <span class="serif" style="color:var(--accent)">less model.</span></h2><p style="color:var(--muted);margin-top:24px;max-width:36ch">Each step came from a measurement or an incident, not a change in taste.</p></div>
+    <div class="era"><div><span class="mono" style="color:var(--dim)">Era</span><div class="big">1</div></div><div><h3>Agent swarm</h3><p>Persona agents coordinating through custom MCP servers.</p><div class="dots" data-n="24"></div></div></div>
+    <div class="era"><div><span class="mono" style="color:var(--dim)">Era</span><div class="big">2</div></div><div><h3>A vault for memory</h3><p>An Obsidian vault becomes the shared memory every session reads.</p><div class="dots" data-n="16"></div></div></div>
+    <div class="era"><div><span class="mono" style="color:var(--dim)">Era</span><div class="big">3</div></div><div><h3>Watchers</h3><p>One terminal per watcher, each waiting for work.</p><div class="dots" data-n="10"></div></div></div>
+    <div class="era"><div><span class="mono" style="color:var(--dim)">Era</span><div class="big">4</div></div><div><h3>Headless workers</h3><p>Detached <code>claude -p</code> jobs that only a status script could see.</p><div class="dots" data-n="6"></div></div></div>
+    <div class="era"><div><span class="mono" style="color:var(--dim)">Era</span><div class="big">5</div></div><div><h3>Script-first</h3><p>Rules over fetched data move into tested scripts.</p><div class="dots" data-n="3"></div></div></div>
+    <div class="era now"><div><span class="mono" style="color:var(--accent)">Era · now</span><div class="big">6</div></div><div><h3>One dashboard</h3><p>Every remaining model run is a row in Claude Code's agent view.</p><div class="dots" data-n="1"></div></div></div>
+    <div style="flex:0 0 20vw"></div>
+  </div>
+  <div class="bar"><i></i></div>
+</section>
+
+<section id="work">
+  <div class="label mono">03 — Selected work</div>
+  <div class="stack">
+    <article class="wcard c1" data-cursor="big"><div class="left"><div><span class="mono" style="color:#7fa6d9">iOS · TestFlight</span><h3>Fin</h3><p class="desc">A routine tracker for puppies. Hand-rolled CloudKit sync on CKSyncEngine, with a zone per dog.</p></div><div class="chips"><span>Swift</span><span>SwiftUI</span><span>CKSyncEngine</span></div></div><div class="vis"><div class="phone"><i></i><i></i><i></i><i></i><i></i></div></div></article>
+    <article class="wcard c2" data-cursor="big"><div class="left"><div><span class="mono">Automation · Live</span><h3>Auto Dog&shy;fluencer</h3><p class="desc">A fully automated Instagram for Finley and Frankie. A Python pipeline shells out to Claude and posts three times a day.</p></div><div class="chips"><span>Python</span><span>claude -p</span><span>Instagram</span></div></div><div class="vis"><div class="grid-sq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></article>
+    <article class="wcard c3" data-cursor="big"><div class="left"><div><span class="mono">Tooling · Agents</span><h3>Script-first dispatcher</h3><p class="desc">The setup the series documents. Deterministic shell around a model that only writes code, judges a review, or drafts prose.</p></div><div class="chips"><span>zsh</span><span>Claude Code</span><span>git revert</span></div></div><div class="vis"><div class="term">$ <em>./dispatch</em>
+<b>›</b> fetch   facts.json        ok
+<b>›</b> decide  rules (tested)    ok
+<b>›</b> apply   1 commit          a41f9c2
+<b>›</b> model   only if work      skipped
+<b>›</b> report  agent view        ok</div></div></article>
+    <article class="wcard c4" data-cursor="big"><div class="left"><div><span class="mono">iOS · Practice</span><h3>SwiftUI&shy;Lab</h3><p class="desc">A catalog of hand-written SwiftUI experiments. Claude reviews; it never writes the first version.</p></div><div class="chips"><span>SwiftUI</span><span>iOS 26</span></div></div><div class="vis"></div></article>
+  </div>
+</section>
+
+<section id="cv">
+  <div class="cv">
+    <div><div class="label mono">04 — Résumé</div><h2>Five years of iOS, <span class="serif" style="color:var(--accent)">one company.</span></h2></div>
+    <div class="rows"><div class="rail"><i></i></div>
+      <div class="job"><span class="when mono">Mar 2024 — Now</span><h3>Senior Software Engineer <span>· Vivint</span></h3><p>Lead mobile on a major app re-architecture with user-driven information architecture and progressive rollout. Architected the networking and data-layer restructure. Set company-wide iOS standards; interview across iOS, Android and backend; mentor.</p></div>
+      <div class="job"><span class="when mono">Apr 2022 — Mar 2024</span><h3>Software Engineer II <span>· Vivint</span></h3><p>Led the iOS Modernization Team, moving a legacy Objective-C codebase onto current Swift and iOS frameworks.</p></div>
+      <div class="job"><span class="when mono">Jul 2021 — Apr 2022</span><h3>Software Engineer I <span>· Vivint</span></h3><p>Shipped iOS features in Swift and Objective-C.</p></div>
+      <div class="job"><span class="when mono">Education</span><h3>B.A. Computer Science <span>· Hamilton College</span></h3><p>Departmental Honors, minor in Mathematics. NCAA student-athlete, NESCAC All-Academic.</p></div>
+      <a class="dl" href="#" data-cursor="link">Résumé PDF ↓</a>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="marquee"><div class="inner"><span>Let's compare notes</span><span class="serif">—</span><span>Let's compare notes</span><span class="serif">—</span><span>Let's compare notes</span><span class="serif">—</span><span>Let's compare notes</span><span class="serif">—</span></div></div>
+  <div class="foot">
+    <a class="mag" href="mailto:cates.connor@gmail.com"><span>Say hello ↗</span></a>
+    <div class="links mono"><a href="https://github.com/ccates83" data-cursor="link">GitHub</a><a href="https://linkedin.com/in/connorcates" data-cursor="link">LinkedIn</a><a href="https://medium.com/@connorcates" data-cursor="link">Medium</a></div>
+    <div class="clock mono">Boston · <span id="clock"></span></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+<script>
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+gsap.registerPlugin(ScrollTrigger, SplitText);
+
+/* ---------- smooth scroll (Lenis on GSAP's ticker) ---------- */
+let lenis;
+if (!reduce) {
+  lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(t => lenis.raf(t * 1000));
+  gsap.ticker.lagSmoothing(0);
+  lenis.stop();
+}
+document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+  const id = a.getAttribute('href'); if (id.length < 2) return;
+  e.preventDefault(); lenis ? lenis.scrollTo(id, { duration: 1.6 }) : document.querySelector(id).scrollIntoView();
+}));
+
+/* ---------- scroll progress ---------- */
+gsap.to('.progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: .3 } });
+
+/* ---------- custom cursor ---------- */
+const dot = document.querySelector('.cursor'), ring = document.querySelector('.cursor-ring');
+const mouse = { x: innerWidth / 2, y: innerHeight / 2 }, rp = { ...mouse };
+addEventListener('pointermove', e => { mouse.x = e.clientX; mouse.y = e.clientY; gsap.set(dot, { x: mouse.x, y: mouse.y }); });
+gsap.ticker.add(() => { rp.x += (mouse.x - rp.x) * .16; rp.y += (mouse.y - rp.y) * .16; gsap.set(ring, { x: rp.x, y: rp.y }); });
+document.querySelectorAll('[data-cursor], a').forEach(el => {
+  const kind = el.dataset.cursor || 'link';
+  el.addEventListener('pointerenter', () => { ring.classList.add(kind); ring.querySelector('span').textContent = kind === 'big' ? 'View' : 'Read'; });
+  el.addEventListener('pointerleave', () => ring.classList.remove('big', 'link'));
+});
+document.querySelectorAll('.post').forEach(el => {
+  el.addEventListener('pointerenter', () => ring.classList.remove('link'));
+});
+
+/* ---------- swarm → line canvas ---------- */
+const cv = document.getElementById('swarm'), ctx = cv.getContext('2d');
+let W, H, DPR = Math.min(devicePixelRatio, 2);
+const N = innerWidth < 700 ? 140 : 260, P = [];
+function size() { W = cv.clientWidth; H = cv.clientHeight; cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
+size(); addEventListener('resize', size);
+for (let i = 0; i < N; i++) P.push({ a: Math.random() * Math.PI * 2, r: Math.random(), s: .2 + Math.random() * .8, ph: Math.random() * 100, x: 0, y: 0, ox: 0, oy: 0, k: i / (N - 1) });
+const state = { morph: 0, intro: 0 };
+const cm = { x: -999, y: -999 };
+cv.parentElement.addEventListener('pointermove', e => { const b = cv.getBoundingClientRect(); cm.x = e.clientX - b.left; cm.y = e.clientY - b.top; });
+cv.parentElement.addEventListener('pointerleave', () => { cm.x = cm.y = -999; });
+let t = 0;
+function draw() {
+  t += .006;
+  ctx.clearRect(0, 0, W, H);
+  const cx = W * .62, cy = H * .42, R = Math.min(W, H) * .34;
+  const m = state.morph, ease = m < .5 ? 4 * m * m * m : 1 - Math.pow(-2 * m + 2, 3) / 2;
+  const lineY = H * .42, x0 = W * .12, x1 = W * .88;
+  // connections (only in swarm phase)
+  const links = (1 - ease) * .9 * state.intro;
+  for (let i = 0; i < N; i++) {
+    const p = P[i];
+    // swarm target: noisy orbit
+    const ang = p.a + t * p.s * (p.r > .5 ? 1 : -1);
+    const rr = R * (.25 + p.r * .85) + Math.sin(t * 3 + p.ph) * 18;
+    const sx = cx + Math.cos(ang) * rr * 1.25, sy = cy + Math.sin(ang) * rr * .8;
+    // line target: evenly spaced, gently breathing
+    const lx = x0 + (x1 - x0) * p.k, ly = lineY + Math.sin(p.k * 18 + t * 4) * 3 * (1 - ease * .7);
+    let tx = sx + (lx - sx) * ease, ty = sy + (ly - sy) * ease;
+    // cursor repulsion
+    const dx = tx - cm.x, dy = ty - cm.y, d2 = dx * dx + dy * dy;
+    if (d2 < 140 * 140) { const f = (1 - Math.sqrt(d2) / 140) * 60; const d = Math.sqrt(d2) || 1; p.ox += (dx / d * f - p.ox) * .2; p.oy += (dy / d * f - p.oy) * .2; }
+    else { p.ox *= .9; p.oy *= .9; }
+    p.x += (tx + p.ox - p.x) * .12; p.y += (ty + p.oy - p.y) * .12;
+  }
+  if (links > .02) {
+    ctx.lineWidth = .6;
+    for (let i = 0; i < N; i += 2) for (let j = i + 1; j < Math.min(N, i + 14); j++) {
+      const a = P[i], b = P[j], dx = a.x - b.x, dy = a.y - b.y, d = dx * dx + dy * dy;
+      if (d < 70 * 70) { ctx.strokeStyle = `rgba(255,255,255,${(1 - d / 4900) * .16 * links})`; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
+    }
+  }
+  // the "script" line itself
+  if (ease > .4) { ctx.strokeStyle = `rgba(255,91,46,${(ease - .4) * .8})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x0, lineY); ctx.lineTo(x0 + (x1 - x0) * Math.min(1, (ease - .4) / .6), lineY); ctx.stroke(); }
+  for (let i = 0; i < N; i++) {
+    const p = P[i], hot = ease > .95 && i === N - 1;
+    const r = (1.1 + p.r * 1.4) * (1 - ease * .35);
+    ctx.fillStyle = hot ? '#ff5b2e' : `rgba(237,237,238,${(.35 + p.r * .6) * state.intro})`;
+    ctx.beginPath(); ctx.arc(p.x, p.y, hot ? 5 : r, 0, 7); ctx.fill();
+  }
+  // a single accent "model run" pulse travels the line at the end
+  if (ease > .9) { const px = x0 + ((t * .25) % 1) * (x1 - x0); ctx.fillStyle = '#ff5b2e'; ctx.shadowColor = '#ff5b2e'; ctx.shadowBlur = 18; ctx.beginPath(); ctx.arc(px, lineY, 4, 0, 7); ctx.fill(); ctx.shadowBlur = 0; }
+}
+P.forEach(p => { p.x = W * .62; p.y = H * .42; });
+gsap.ticker.add(draw);
+
+gsap.timeline({ scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom bottom', scrub: .6 } })
+  .to(state, { morph: 1, ease: 'none' }, 0)
+  .fromTo('.hero .phase .from', { opacity: 1 }, { opacity: .25, ease: 'none' }, 0)
+  .fromTo('.hero .phase .now', { opacity: .25 }, { opacity: 1, ease: 'none' }, .2)
+  .to('.hero h1', { yPercent: -18, opacity: .15, ease: 'none' }, .55)
+  .to('.hero .scrollhint', { opacity: 0, duration: .1 }, 0);
+
+/* ---------- loader + intro ---------- */
+const heroSplit = document.querySelectorAll('.hero h1 .li');
+const intro = gsap.timeline({ defaults: { ease: 'expo.out' } });
+const cnt = { v: 0 };
+gsap.set('.loader .ln', { yPercent: 110 });
+intro
+  .to('.loader .ln', { yPercent: 0, duration: 1 })
+  .to(cnt, { v: 100, duration: reduce ? .1 : 1.4, ease: 'power2.inOut', onUpdate: () => document.querySelector('.loader .count').textContent = String(Math.round(cnt.v)).padStart(3, '0') }, 0)
+  .to('.loader .bar', { scaleX: 1, duration: 1.4, ease: 'power2.inOut' }, 0)
+  .to('.loader .ln', { yPercent: -110, duration: .7, ease: 'expo.in' }, 1.4)
+  .to('.loader', { clipPath: 'inset(0 0 100% 0)', duration: 1.1, ease: 'expo.inOut' }, 1.7)
+  .from(heroSplit, { yPercent: 110, duration: 1.4, stagger: .1 }, 2.2)
+  .to(state, { intro: 1, duration: 2, ease: 'power2.out' }, 2)
+  .from('.hero .meta, .hero .phase, nav.top', { opacity: 0, y: 16, duration: 1, stagger: .08 }, 2.6)
+  .add(() => { document.body.classList.remove('loading'); lenis && lenis.start(); }, 2.4);
+
+/* ---------- manifesto: words light up with scroll ---------- */
+const mp = document.querySelector('.split-words');
+const sw = new SplitText(mp, { type: 'words', wordsClass: 'w' });
+if (!reduce) gsap.to(sw.words, { opacity: 1, stagger: .1, ease: 'none', scrollTrigger: { trigger: mp, start: 'top 75%', end: 'bottom 45%', scrub: true } });
+gsap.from('.principles > div', { y: 60, opacity: 0, duration: 1.2, stagger: .12, ease: 'expo.out', scrollTrigger: { trigger: '.principles', start: 'top 85%' } });
+
+/* ---------- section labels + headings reveal ---------- */
+document.querySelectorAll('.label').forEach(l => gsap.from(l, { opacity: 0, x: -20, duration: 1, ease: 'expo.out', scrollTrigger: { trigger: l, start: 'top 90%' } }));
+document.querySelectorAll('.post h3, .cv h2, .job h3').forEach(h => {
+  const s = new SplitText(h, { type: 'lines', mask: 'lines' });
+  gsap.from(s.lines, { yPercent: 105, duration: 1.2, stagger: .08, ease: 'expo.out', scrollTrigger: { trigger: h, start: 'top 90%' } });
+});
+
+/* ---------- writing: cursor-following preview with velocity skew ---------- */
+const pv = document.querySelector('.preview'), pvc = pv.querySelector('.card');
+const pos = { x: 0, y: 0 }, pp = { x: 0, y: 0 };
+let showing = false;
+addEventListener('pointermove', e => { pos.x = e.clientX + 24; pos.y = e.clientY - 110; });
+gsap.ticker.add(() => {
+  const vx = pos.x - pp.x; pp.x += vx * .12; pp.y += (pos.y - pp.y) * .12;
+  gsap.set(pv, { x: pp.x, y: pp.y, rotate: gsap.utils.clamp(-12, 12, vx * .15) });
+});
+document.querySelectorAll('.post').forEach(el => {
+  el.addEventListener('pointerenter', () => {
+    pvc.querySelector('p').textContent = el.dataset.preview; pvc.querySelector('.tag').textContent = el.dataset.tag;
+    gsap.to(pv, { opacity: 1, scale: 1, duration: .5, ease: 'expo.out' }); showing = true;
+  });
+  el.addEventListener('pointerleave', () => { gsap.to(pv, { opacity: 0, scale: .6, duration: .4, ease: 'expo.out' }); showing = false; });
+});
+
+/* ---------- eras: pinned horizontal scroll ---------- */
+document.querySelectorAll('.dots').forEach(d => { for (let i = 0; i < +d.dataset.n; i++) d.appendChild(document.createElement('i')); });
+const track = document.querySelector('.eras .track');
+const hz = gsap.to(track, { x: () => -(track.scrollWidth - innerWidth), ease: 'none',
+  scrollTrigger: { trigger: '.eras', pin: true, start: 'top top', end: () => '+=' + (track.scrollWidth - innerWidth), scrub: .8, invalidateOnRefresh: true } });
+gsap.to('.eras .bar i', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: '.eras', start: 'top top', end: () => '+=' + (track.scrollWidth - innerWidth), scrub: true } });
+document.querySelectorAll('.era').forEach(era => {
+  gsap.from(era.querySelectorAll('.big, h3, p, .dots i'), { y: 50, opacity: 0, stagger: .03, ease: 'expo.out', duration: 1,
+    scrollTrigger: { trigger: era, containerAnimation: hz, start: 'left 85%' } });
+});
+
+/* ---------- work: stacked sticky cards ---------- */
+const cards = gsap.utils.toArray('.wcard');
+cards.forEach((c, i) => {
+  if (i === cards.length - 1) return;
+  gsap.to(c, { scale: .9, opacity: .35, filter: 'blur(2px)', ease: 'none',
+    scrollTrigger: { trigger: cards[i + 1], start: 'top bottom', end: 'top 12%', scrub: true } });
+});
+cards.forEach(c => {
+  const vis = c.querySelector('.vis');
+  gsap.fromTo(vis, { clipPath: 'inset(30% 30% 30% 30% round 12px)' }, { clipPath: 'inset(0% 0% 0% 0% round 12px)', ease: 'expo.out', duration: 1.6, scrollTrigger: { trigger: c, start: 'top 70%' } });
+  c.addEventListener('pointermove', e => { const b = c.getBoundingClientRect(); gsap.to(vis, { x: (e.clientX - b.left - b.width / 2) * .03, y: (e.clientY - b.top - b.height / 2) * .03, duration: .8, ease: 'expo.out' }); });
+});
+// SwiftUILab: a tiny live "spring" demo
+(() => {
+  const v = document.querySelector('.c4 .vis'); const b = document.createElement('div');
+  Object.assign(b.style, { position: 'absolute', width: '84px', height: '84px', borderRadius: '24px', background: '#9fe0a8', left: '50%', top: '50%', margin: '-42px 0 0 -42px', boxShadow: '0 20px 60px rgba(120,220,140,.35)' });
+  v.appendChild(b);
+  const lbl = document.createElement('div'); lbl.className = 'mono'; lbl.textContent = 'move your cursor · .spring(response: 0.5)';
+  Object.assign(lbl.style, { position: 'absolute', left: '20px', bottom: '18px', opacity: .6 }); v.appendChild(lbl);
+  v.addEventListener('pointermove', e => { const r = v.getBoundingClientRect(); gsap.to(b, { x: e.clientX - r.left - r.width / 2, y: e.clientY - r.top - r.height / 2, rotate: (e.clientX - r.left - r.width / 2) * .15, duration: 1.1, ease: 'elastic.out(1, .45)' }); });
+  v.addEventListener('pointerleave', () => gsap.to(b, { x: 0, y: 0, rotate: 0, duration: 1.4, ease: 'elastic.out(1, .35)' }));
+})();
+
+/* ---------- cv: drawn rail ---------- */
+gsap.to('.cv .rail i', { scaleY: 1, ease: 'none', scrollTrigger: { trigger: '.cv .rows', start: 'top 70%', end: 'bottom 70%', scrub: true } });
+gsap.utils.toArray('.job').forEach(j => gsap.from(j.querySelectorAll('.when, p'), { opacity: 0, y: 20, duration: 1, stagger: .1, ease: 'expo.out', scrollTrigger: { trigger: j, start: 'top 85%' } }));
+
+/* ---------- footer: velocity marquee + magnetic button + clock ---------- */
+const inner = document.querySelector('.marquee .inner');
+let mx = 0, dir = 1, boost = 0;
+if (lenis) lenis.on('scroll', ({ velocity }) => { boost = velocity; dir = velocity < 0 ? -1 : 1; });
+gsap.ticker.add(() => {
+  const half = inner.scrollWidth / 2;
+  mx -= (1.2 + Math.abs(boost) * .6) * dir; boost *= .92;
+  if (mx < -half) mx += half; if (mx > 0) mx -= half;
+  gsap.set(inner, { x: mx, skewX: gsap.utils.clamp(-8, 8, -boost * .4) });
+});
+const mag = document.querySelector('.mag');
+mag.addEventListener('pointermove', e => { const b = mag.getBoundingClientRect(), x = e.clientX - b.left - b.width / 2, y = e.clientY - b.top - b.height / 2; gsap.to(mag, { x: x * .4, y: y * .4, duration: .6, ease: 'expo.out' }); gsap.to(mag.querySelector('span'), { x: x * .2, y: y * .2, duration: .6, ease: 'expo.out' }); });
+mag.addEventListener('pointerleave', () => gsap.to([mag, mag.querySelector('span')], { x: 0, y: 0, duration: 1.2, ease: 'elastic.out(1, .3)' }));
+const clock = () => document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+clock(); setInterval(clock, 1000);
+
+addEventListener('load', () => ScrollTrigger.refresh());
+</script>
+</body>
+</html>

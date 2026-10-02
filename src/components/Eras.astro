@@ -1,0 +1,64 @@
+---
+import { eras } from '../data/site';
+const md = (s: string) => s.replace(/`([^`]+)`/g, '<code>$1</code>');
+---
+<section class="eras" id="arc" aria-labelledby="arc-title">
+  <div class="track">
+    <div class="intro">
+      <p class="label mono">02 — The arc</p>
+      <h2 id="arc-title">From more model to <span class="serif accent">less model.</span></h2>
+      <p class="sub">Each step came from a measurement or an incident, not a change in taste.</p>
+    </div>
+    {eras.map((e) => (
+      <article class:list={['era', { now: e.now }]}>
+        <div><span class="mono k">{e.now ? 'Era · now' : 'Era'}</span><div class="big" aria-hidden="true">{e.n}</div></div>
+        <div>
+          <h3><span class="sr-only">Era {e.n}: </span>{e.title}</h3>
+          <p set:html={md(e.body)} />
+          <div class="dots" aria-hidden="true">{Array.from({ length: e.dots }).map(() => <i />)}</div>
+        </div>
+      </article>
+    ))}
+    <div class="spacer"></div>
+  </div>
+  <div class="bar" aria-hidden="true"><i></i></div>
+</section>
+
+<style>
+  .eras { height: 100vh; height: 100svh; overflow: hidden; position: relative; }
+  .track { display: flex; height: 100%; align-items: center; padding-left: var(--gutter); will-change: transform; }
+  .intro { flex: 0 0 min(560px, 84vw); padding-right: 64px; }
+  .intro .label { margin-bottom: 0; }
+  h2 { font-size: clamp(42px, 6vw, 92px); letter-spacing: -.045em; line-height: .95; font-weight: 500; margin-top: 24px; }
+  .sub { color: var(--muted); margin-top: 24px; max-width: 36ch; }
+  .era { flex: 0 0 min(440px, 78vw); height: 64vh; border-left: 1px solid var(--line); padding: 32px; display: flex; flex-direction: column; justify-content: space-between; }
+  .k { color: var(--dim); } .now .k { color: var(--accent); }
+  .big { font-size: clamp(90px, 14vw, 200px); font-weight: 300; letter-spacing: -.06em; line-height: .8; color: transparent; -webkit-text-stroke: 1px rgba(255, 255, 255, .18); }
+  .now .big { -webkit-text-stroke: 0; color: var(--accent); }
+  h3 { font-size: 30px; font-weight: 500; letter-spacing: -.025em; margin: 10px 0; }
+  .era p { color: var(--muted); max-width: 32ch; }
+  .dots { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 20px; max-width: 220px; }
+  .dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); opacity: .6; }
+  .now .dots i { background: var(--accent); opacity: 1; }
+  .spacer { flex: 0 0 20vw; }
+  .bar { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 40px; height: 1px; background: var(--line); }
+  .bar i { position: absolute; inset: 0; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+  @media (prefers-reduced-motion: reduce) {
+    .eras { height: auto; } .track { flex-direction: column; align-items: stretch; padding: 110px var(--gutter); gap: 24px; }
+    .era { height: auto; flex: none; gap: 24px; border-left: 0; border-top: 1px solid var(--line); padding: 32px 0; } .bar, .spacer { display: none; }
+  }
+</style>
+
+<script>
+  import { gsap, reduce } from '../scripts/core';
+  if (!reduce) {
+    const track = document.querySelector<HTMLElement>('.eras .track')!;
+    const dist = () => track.scrollWidth - innerWidth;
+    const hz = gsap.to(track, { x: () => -dist(), ease: 'none',
+      scrollTrigger: { trigger: '.eras', pin: true, start: 'top top', end: () => '+=' + dist(), scrub: 0.8, invalidateOnRefresh: true } });
+    gsap.to('.eras .bar i', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: '.eras', start: 'top top', end: () => '+=' + dist(), scrub: true, invalidateOnRefresh: true } });
+    document.querySelectorAll<HTMLElement>('.era').forEach((era) =>
+      gsap.from(era.querySelectorAll('.big, h3, p, .dots i'), { y: 50, opacity: 0, stagger: 0.03, ease: 'expo.out', duration: 1,
+        scrollTrigger: { trigger: era, containerAnimation: hz, start: 'left 85%' } }));
+  }
+</script>
