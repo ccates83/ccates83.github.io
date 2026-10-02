@@ -2,9 +2,9 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// SITE_URL is a placeholder until a domain is chosen. Update it (and wrangler.jsonc)
-// before the first deploy; the sitemap and canonical URLs are built from it.
-const SITE_URL = 'https://connorcates.com';
+// Served by GitHub Pages from the ccates83.github.io repo. If a custom domain is added,
+// update this and public/robots.txt, and add public/CNAME.
+const SITE_URL = 'https://ccates83.github.io';
 
 export default defineConfig({
   site: SITE_URL,

@@ -7,7 +7,7 @@ Connor Cates's personal site: résumé, an index of the writing on Medium, and p
 - **Astro 7**, static output (`dist/`), one HTML file per route.
 - **GSAP 3.15** (ScrollTrigger, SplitText) for choreography, **Lenis** for smooth scroll on GSAP's ticker.
 - **Native cross-document View Transitions** for page transitions — no client router; every navigation is a real page load.
-- Target host: **Cloudflare Workers Static Assets** (`wrangler.jsonc`), same setup as `ics-website`.
+- Hosted on **GitHub Pages** at https://ccates83.github.io — `.github/workflows/deploy.yml` builds and deploys on every push to `main`.
 
 ## Commands
 
@@ -38,7 +38,12 @@ npm run preview   # serve dist/
 - The custom cursor only appears on fine pointers; the native cursor stays on touch devices.
 - Page scripts wait on `ready` from `core.ts` so entrance animations start after the loader.
 
-## Before first deploy
+## Deploying
 
-- Pick the domain; update `SITE_URL` in `astro.config.mjs`, `public/robots.txt`, and `wrangler.jsonc` `name` if needed.
-- Add an `og-image.png` and the résumé PDF (the résumé page currently prints to PDF via the browser).
+Push to `main`; the Pages workflow builds with `withastro/action` and publishes `dist/`. `build.format: 'file'` writes `writing.html`, which Pages serves at `/writing`.
+
+To add a custom domain later: put the domain in `public/CNAME`, update `SITE_URL` in `astro.config.mjs` and `public/robots.txt`, then set DNS at the registrar.
+
+## Still to do
+
+- `og-image.png` for link previews, and a real résumé PDF (the résumé page currently prints to PDF via the browser).

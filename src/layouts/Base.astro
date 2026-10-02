@@ -7,7 +7,7 @@ import { person } from '../data/site';
 interface Props { title?: string; description?: string; loader?: boolean; footer?: boolean }
 const { title, description = `${person.name} — ${person.positioning}. ${person.bio}`, loader = false, footer = true } = Astro.props;
 const fullTitle = title ? `${title} · ${person.name}` : `${person.name} — ${person.positioning}`;
-const canonical = new URL(Astro.url.pathname, Astro.site);
+const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ''), Astro.site);
 ---
 <!doctype html>
 <html lang="en">
