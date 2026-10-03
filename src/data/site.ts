@@ -2,8 +2,8 @@
 // Facts come from the old personal-site data.ts and the brain-vault Blog notes.
 
 export const person = {
-  name: 'Connor Cates',
-  fullName: 'Connor dos Santos Cates',
+  name: 'Connor Dos Santos Cates',
+  fullName: 'Connor Dos Santos Cates',
   role: 'Senior Software Engineer',
   company: 'Vivint',
   location: 'Boston, MA',

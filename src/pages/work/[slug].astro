@@ -28,10 +28,12 @@ const { Content } = await render(project);
     <div class:list={['hero-vis', p.theme]}><ProjectVisual kind={p.visual} /></div>
     <div class="section body"><div class="prose" data-reveal="fade"><Content /></div></div>
   </article>
-  <a class="next" href={`/work/${next.id}`} data-cursor="big" data-cursor-label="Next">
-    <span class="mono">Next project</span>
-    <span class="nt">{next.data.title} <span class="arrow">→</span></span>
-  </a>
+  {next.id !== project.id && (
+    <a class="next" href={`/work/${next.id}`} data-cursor="big" data-cursor-label="Next">
+      <span class="mono">Next project</span>
+      <span class="nt">{next.data.title} <span class="arrow">→</span></span>
+    </a>
+  )}
 </Base>
 
 <style is:global>
